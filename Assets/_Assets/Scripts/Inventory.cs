@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class Inventory : MonoBehaviour, IDragHandler
 {
@@ -15,10 +13,15 @@ public class Inventory : MonoBehaviour, IDragHandler
     [SerializeField] RectTransform inventoryRectTransform;
     [SerializeField] RectTransform headerRectTransform;
 
-    List<slot> slots = new List<slot>();
+    [SerializeField] int x = 2;
+    [SerializeField] int y = 2;
 
-    [SerializeField] int x = 3;
-    [SerializeField] int y = 3;
+    [Header("Public, do not touch")]
+    
+    public List<slot> slots = new List<slot>();
+    public List<item> items = new List<item>();
+
+    public bool itemDragging;
 
     private void Start()
     {
@@ -59,58 +62,99 @@ public class Inventory : MonoBehaviour, IDragHandler
                 slots.Add(newSlot);
             }
         }
-    }
 
-    public List<slot> GetInventorySlots()
-    {
-        return slots;
-    }
-
-    private Vector2 GetTileFromIndex(int index)
-    {
-        Vector2 slot;
-        slot.x = index % y;
-        slot.y = index / y;
-
-        return slot;
-    }
-
-    float GetIndexFromSlot(Vector2 slot)
-    {
-        float index = slot.y + (slot.y * y);
-        return index;
-    }
-
-    public bool isSlotsValid(item item, slot slot)
-    {
-        Vector2 itemSize = item.GetItemSize();
-        Vector2 gridPos = slot.GetGridPos();
-
-        for (float i = gridPos.x; i <= itemSize.x; i++)
+        foreach(item item in items)
         {
-            for (float j = gridPos.y; j <= itemSize.y; j++)
+            if(item.inInventory)
             {
-                Vector2 check = new Vector2(i, j);
-                if (check.x >= 0 && check.y >= 0 && check.x < this.x && check.y < this.y)
-                {
-                    item checkItem = slots[(int)GetIndexFromSlot(check)].GetItem();
-                    if (checkItem == null)
-                    {
+                slot itemsSlot = GetSlotFromGridPos(item.gridPos);
+                item.transform.SetAsLastSibling();
+                itemsSlot.TryPlaceItem(item);
+                item.wasFlipped = false;
+                item.SetPos(itemsSlot.transform.localPosition);
+            }
+        }
+    }
 
-                    }
-                    else
+    public void RegistarItem(item item)
+    {
+        item.onItemAdjusted += ItemAdjusted; // make sure to unregistar I think
+    }
+
+    private void ItemAdjusted(item item, bool added)
+    {
+        if (items.Contains(item) && added)
+            return;
+
+        if(added)
+        {
+            items.Add(item);
+        }
+        else
+        {
+            items.Remove(item);
+        }
+    }
+
+    public List<slot> GetPossibleSlots(item item, Vector2 gridPos)
+    {
+        Vector2 itemSize = item.itemSize;
+        List<slot> possibleSlots = new List<slot>();
+
+        float dimensionX = gridPos.x + (itemSize.x - 1);
+        float dimensionY = gridPos.y + (itemSize.y - 1);
+
+        for (float i = gridPos.x; i <= dimensionX; i++)
+        {
+            for (float j = gridPos.y; j <= dimensionY; j++)
+            {
+                Vector2 gridCheck = new Vector2(i, j);
+
+                if (gridCheck.x >= 0 && gridCheck.y >= 0 && gridCheck.x < x && gridCheck.y < y)
+                {
+                    slot slot = slots[GetIndexFromSlot(gridCheck)];
+                    if (slot != null)
                     {
-                        return false;
+                        possibleSlots.Add(slot);
                     }
                 }
                 else
                 {
-                    return false;
+                    possibleSlots[0].badgroup = true;
                 }
             }
         }
 
-        return true;
+        return possibleSlots;
+    }
+
+    public bool ValidSlotPlacement(List<slot> possibleSlots)
+    {
+        bool valid = true;
+        foreach (slot slot in possibleSlots)
+        {
+            if (slot.myItem != null)
+                valid = false;
+        }
+        return valid;
+    }
+
+    private int GetIndexFromSlot(Vector2 slot)
+    {
+        float index = slot.y + (slot.x * x);
+        return (int)index;
+    }
+
+    private slot GetSlotFromGridPos(Vector2 gridPos)
+    {
+        foreach (slot slot in slots)
+        {
+            if (slot.gridPos == gridPos)
+            {
+                return slot;
+            }
+        }
+        return slots[0];
     }
 
     void IDragHandler.OnDrag(PointerEventData eventData)
