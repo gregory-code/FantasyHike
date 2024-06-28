@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour, IDragHandler
@@ -26,6 +27,11 @@ public class Inventory : MonoBehaviour, IDragHandler
     private void Start()
     {
         Resize(x, y);
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(0);
     }
 
     private void Update()
