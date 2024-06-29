@@ -7,8 +7,11 @@ using UnityEngine.UI;
 
 public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] Color highlightGood;
-    [SerializeField] Color highlightBad;
+    [SerializeField] Sprite goodSlot;
+    [SerializeField] Sprite badSlot;
+    [SerializeField] Sprite regularSlot;
+    [SerializeField] Color highlightColor;
+    [SerializeField] Color regularColor;
     
     private List<slot> highlightedSlots = new List<slot>();
     private Inventory owner;
@@ -57,7 +60,7 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         TryPlaceItem(item);
     }
 
-    public void TryPlaceItem(item item)
+    public bool TryPlaceItem(item item)
     {
         item.inInventory = true;
 
@@ -66,7 +69,7 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (owner.ValidSlotPlacement(possibleSlots) == false || possibleSlots[0].badgroup)
         {
             item.ResetPos();
-            return;
+            return false;
         }
 
         // item gets added
@@ -77,11 +80,14 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         item.gridPos = gridPos;
         item.SetPos(this.transform.localPosition);
+        return true;
     }
 
     public void Highlight(bool goodPlacement)
     {
-        GetComponent<Image>().color = (goodPlacement) ? highlightGood : highlightBad  ;
+        GetComponent<Image>().sprite = (goodPlacement) ? goodSlot : badSlot  ;
+        GetComponent<RectTransform>().sizeDelta = new Vector2(75, 75);
+        GetComponent<Image>().color = highlightColor;
         if(goodPlacement == false)
         {
             transform.SetAsLastSibling();
@@ -90,14 +96,16 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void Deselect()
     {
-        GetComponent<Image>().color = Color.white;
+        GetComponent<Image>().sprite = regularSlot;
+        GetComponent<RectTransform>().sizeDelta = new Vector2(90, 90);
+        GetComponent<Image>().color = regularColor;
         badgroup = false;
         transform.SetAsFirstSibling();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        EnterSlot();
+        //EnterSlot();
     }
 
     private void EnterSlot()
@@ -105,8 +113,6 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         isHovering = true;
         if (owner.itemDragging)
         {
-            draggingItem.overlappingSlot = this;
-
             List<slot> checkSlots = owner.GetPossibleSlots(draggingItem, gridPos);
 
             foreach (slot slot in checkSlots)
@@ -126,7 +132,7 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        ExitSlot();
+        //ExitSlot();
     }
 
     private void ExitSlot()
@@ -137,10 +143,15 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             slot.Deselect();
         }
         highlightedSlots.Clear();
+    }
 
-        if(owner.itemDragging)
-        {
-            draggingItem.overlappingSlot = null;
-        }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        EnterSlot();
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        ExitSlot();
     }
 }

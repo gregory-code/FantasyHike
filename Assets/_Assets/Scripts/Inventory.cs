@@ -10,6 +10,7 @@ public class Inventory : MonoBehaviour, IDragHandler
 {
     [SerializeField] Canvas canvas;
     [SerializeField] slot slotPrefab;
+    [SerializeField] DragIndicator dragPrefab;
 
     [SerializeField] RectTransform inventoryRectTransform;
     [SerializeField] RectTransform headerRectTransform;
@@ -19,6 +20,7 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     [Header("Public, do not touch")]
     
+    public DragIndicator drag;
     public List<slot> slots = new List<slot>();
     public List<item> items = new List<item>();
 
@@ -26,6 +28,8 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     private void Start()
     {
+        drag = Instantiate(dragPrefab, transform);
+        drag.Init(this, canvas);
         Resize(x, y);
     }
 
@@ -76,7 +80,6 @@ public class Inventory : MonoBehaviour, IDragHandler
                 slot itemsSlot = GetSlotFromGridPos(item.gridPos);
                 item.transform.SetAsLastSibling();
                 itemsSlot.TryPlaceItem(item);
-                item.wasFlipped = false;
                 item.SetPos(itemsSlot.transform.localPosition);
             }
         }
@@ -151,7 +154,7 @@ public class Inventory : MonoBehaviour, IDragHandler
         return (int)index;
     }
 
-    private slot GetSlotFromGridPos(Vector2 gridPos)
+    public slot GetSlotFromGridPos(Vector2 gridPos)
     {
         foreach (slot slot in slots)
         {
