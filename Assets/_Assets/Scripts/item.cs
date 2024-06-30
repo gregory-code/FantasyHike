@@ -16,14 +16,13 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     
     private List<slot> slots = new List<slot>();
     private Vector2 previousPos;
-    private bool imDragging;
     private bool isClicked;
     private bool wasFlipped;
     private bool wasInInventory;
 
-    public Vector2 itemSize;
-
     [Header("Public, do not touch")]
+
+    public Vector2 itemSize;
 
     public Vector2 gridPos;
     
@@ -106,7 +105,6 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         }
 
         iconImage.color = (state) ? new Color(1,1,1, 0.8f) : new Color(1,1,1,1);
-        imDragging = state;
         inventory.itemDragging = state;
     }
 
