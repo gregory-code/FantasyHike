@@ -8,5 +8,13 @@ public class itemEffect : ScriptableObject
     public Vector2 itemSize;
     public string itemName;
 
-    //public 
+    public Sprite itemIcon;
+
+    public itemType myType;
+    public enum itemType 
+    { 
+        consumable,
+        spell,
+        effect
+    };
 }

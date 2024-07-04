@@ -13,6 +13,8 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     [SerializeField] RectTransform itemRectTransform;
     [SerializeField] RectTransform iconRectTransform;
     [SerializeField] Image iconImage;
+
+    public itemEffect myEffect;
     
     private List<slot> slots = new List<slot>();
     private Vector2 previousPos;
@@ -36,10 +38,13 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
     private void Start()
     {
+        iconImage.sprite = myEffect.itemIcon;
+        itemSize = myEffect.itemSize;
+
         itemRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y); // this needs to be done only once, on init
         iconRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y);
 
-        inventory.RegistarItem(this);
+        inventory.RegistarItem(this); // unregistar item when it's sold
     }
 
     public void SetPos(Vector2 pos)
@@ -162,7 +167,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         Vector2 mousePos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(inventory.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out mousePos);
         itemRectTransform.anchoredPosition = mousePos;
-        itemRectTransform.anchoredPosition += new Vector2(-45 * (itemSize.x - 1), 45 * (itemSize.y - 1));
+        itemRectTransform.anchoredPosition += new Vector2(-45 * (itemSize.x - 1) - 40, 45 * (itemSize.y - 1) + 40);
         inventory.drag.BeginDrag(itemSize);
         // --- //
 

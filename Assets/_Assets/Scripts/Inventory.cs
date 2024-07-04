@@ -105,6 +105,19 @@ public class Inventory : MonoBehaviour, IDragHandler
         }
     }
 
+    public List<item> GetItemType(itemEffect.itemType type)
+    {
+        List<item> consumables = new List<item>();
+        foreach(item item in items)
+        {
+            if(item.myEffect.myType == type)
+            {
+                consumables.Add(item);
+            }
+        }
+        return consumables;
+    }
+
     public List<slot> GetPossibleSlots(item item, Vector2 gridPos)
     {
         Vector2 itemSize = item.itemSize;
