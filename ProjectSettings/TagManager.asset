@@ -4,9 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - attack
-  - spell
-  - item
+  - MainCanvas
   layers:
   - Default
   - TransparentFX

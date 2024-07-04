@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour, IDragHandler
 {
-    [SerializeField] Canvas canvas;
+    private Canvas canvas;
+    
     [SerializeField] slot slotPrefab;
     [SerializeField] DragIndicator dragPrefab;
 
@@ -28,6 +29,8 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     private void Start()
     {
+        canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
+
         drag = Instantiate(dragPrefab, transform);
         drag.Init(this, canvas);
         Resize(x, y);

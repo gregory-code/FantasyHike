@@ -20,6 +20,7 @@ public class enemyUI : MonoBehaviour
     public void Init(Enemy owner, int maxHealth)
     {
         this.owner = owner;
+        owner.onHealthChanged += ChangeHealth;
 
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;

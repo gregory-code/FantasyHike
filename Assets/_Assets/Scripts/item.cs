@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
-    [SerializeField] Canvas canvas;
-    [SerializeField] Inventory inventory;
+    private Canvas canvas;
+    private Inventory inventory;
 
     [SerializeField] RectTransform itemRectTransform;
     [SerializeField] RectTransform iconRectTransform;
@@ -43,6 +43,9 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
         itemRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y); // this needs to be done only once, on init
         iconRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y);
+
+        inventory = FindObjectOfType<Inventory>();
+        canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
 
         inventory.RegistarItem(this); // unregistar item when it's sold
     }

@@ -25,6 +25,7 @@ public class playerUI : MonoBehaviour
     public void Init(Player owner, int maxHealth, int maxMana)
     {
         this.owner = owner;
+        owner.onHealthChanged += ChangeHealth;
 
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
