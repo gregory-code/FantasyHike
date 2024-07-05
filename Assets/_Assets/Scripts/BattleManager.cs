@@ -70,16 +70,21 @@ public class BattleManager : MonoBehaviour
         enemies.Clear();
 
         Vector3 spawnPos = enemyPos.position;
-        spawnPos.x += 20f;
+        spawnPos.x += 10f;
 
+        SpawnEnemy(spawnPos);
+
+        yield return new WaitForSeconds(3f);
+
+        player.ShowActions();
+    }
+
+    private void SpawnEnemy(Vector3 spawnPos)
+    {
         Enemy newEnemy = Instantiate(slime, spawnPos, Quaternion.identity);
         newEnemy.Init(this);
         newEnemy.onEndTurn += CharacterEndedTurn;
         enemies.Add(newEnemy);
         StartCoroutine(newEnemy.MoveTo(enemyPos));
-
-        yield return new WaitForSeconds(3f);
-
-        player.ShowActions();
     }
 }

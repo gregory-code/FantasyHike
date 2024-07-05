@@ -50,6 +50,7 @@ MonoBehaviour:
   characterRenderer: {fileID: 2541975145447183576}
   damagePopup: {fileID: 2048790595128772915, guid: 4d70ddc1d8d2fc744ac50f231fafe14d,
     type: 3}
+  deathSmoke: {fileID: 119968, guid: 14b3d78875b54a9438ccfdac0b6a6737, type: 3}
   strength: 0
   isPlayer: 0
   attackPoint: {fileID: 2255352037924257881}

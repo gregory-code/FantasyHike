@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
-using static Player;
-using static UnityEngine.GraphicsBuffer;
 
 public class character : MonoBehaviour
 {
@@ -12,6 +10,7 @@ public class character : MonoBehaviour
     [SerializeField] Animator shadowAnim;
     [SerializeField] SpriteRenderer characterRenderer;
     [SerializeField] GameObject damagePopup;
+    [SerializeField] GameObject deathSmoke;
 
     [Header("Stats")]
     [SerializeField] int strength;
@@ -102,8 +101,10 @@ public class character : MonoBehaviour
         yield return new WaitForSeconds(animLength["dead"]);
         yield return new WaitForSeconds(0.5f);
 
+        GameObject smoke = Instantiate(deathSmoke, transform.position, transform.rotation);
+        Destroy(smoke.gameObject, 1.5f);
+
         Destroy(this.gameObject);
-        //Instantiate the smoke effect here
     }
 
     public IEnumerator DamageFlash()

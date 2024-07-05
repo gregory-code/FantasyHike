@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca899cca228489445acaaa768463c239, type: 3}
   m_Name: dagger
   m_EditorClassIdentifier: 
-  itemSize: {x: 1, y: 1}
+  itemSize: {x: 1, y: 2}
   itemName: Dagger
+  spellName: 
   itemIcon: {fileID: 21300000, guid: 33c38c013a626144795b4f9f32318e58, type: 3}
+  spellIcon: {fileID: 0}
+  manaCost: 0
   myType: 2
