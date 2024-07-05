@@ -19,6 +19,11 @@ public class itemEffect : ScriptableObject
     [Header("Spell Cost")]
     public int manaCost;
 
+    [Header("Description")]
+    public description itemDescription;
+
+    public bool targetsEnemies;
+
     public itemType myType;
     public enum itemType 
     { 

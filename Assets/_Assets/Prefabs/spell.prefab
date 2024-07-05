@@ -676,12 +676,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7553296812423982789}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7025afba3e420244782478caa18d06ef, type: 3}
+  m_Script: {fileID: 11500000, guid: a63ac3742b4d95c4d9fc0d4952ee38ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemOwner: {fileID: 0}
+  list: {fileID: 0}
+  description: {fileID: 0}
+  itemText: {fileID: 745507988714855924}
+  itemImage: {fileID: 5076884818032605981}
+  isSpell: 1
   manaCostText: {fileID: 1246416557975395218}
-  spellNameText: {fileID: 745507988714855924}
-  spellImage: {fileID: 5076884818032605981}
 --- !u!114 &6027072361441675978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -726,13 +730,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 985817170934289296}
+        m_TargetAssemblyTypeName: usableItem, Assembly-CSharp
+        m_MethodName: SelectThisItem
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

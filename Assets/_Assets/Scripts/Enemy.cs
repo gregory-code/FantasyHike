@@ -13,6 +13,7 @@ public class Enemy : character, IPointerClickHandler
     private BattleManager battleManager;
 
     [SerializeField] Animator attackIndicatorAnim;
+    [SerializeField] Animator spellIndicatorAnim;
 
     [SerializeField] item itemPrefab;
 
@@ -53,6 +54,12 @@ public class Enemy : character, IPointerClickHandler
     {
         attackIndicatorAnim.SetBool("swing", state); 
         attackIndicatorAnim.SetBool("finish", !state);
+    }
+
+    public void SetSpellIndicator(bool state)
+    {
+        spellIndicatorAnim.SetBool("show", state);
+        spellIndicatorAnim.SetBool("finish", !state);
     }
 
     public void OnPointerClick(PointerEventData eventData)

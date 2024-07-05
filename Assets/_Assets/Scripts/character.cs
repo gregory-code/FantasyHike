@@ -13,7 +13,8 @@ public class character : MonoBehaviour
     [SerializeField] GameObject deathSmoke;
 
     [Header("Stats")]
-    [SerializeField] int strength;
+    public int baseStrength;
+    public int baseMagic;
 
     public bool isPlayer;
 
@@ -52,7 +53,7 @@ public class character : MonoBehaviour
         PlayAnim("basicAttack");
         yield return new WaitForSeconds(animLength["basicAttack"] / 3f);
         yield return new WaitForSeconds(animLength["basicAttack"] / 3f);
-        target.TakeDamage(-(1 + strength));
+        target.TakeDamage(-(1 + baseStrength));
         yield return new WaitForSeconds(animLength["basicAttack"] / 3f);
         PlayAnim("return");
         yield return new WaitForSeconds(0.3f);
