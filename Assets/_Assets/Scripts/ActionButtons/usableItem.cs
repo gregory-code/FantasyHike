@@ -17,6 +17,7 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
     [SerializeField] TextMeshProUGUI itemText;
     [SerializeField] Image itemImage;
 
+    [SerializeField] CanvasGroup group;
 
     [Header("Spells")]
     public bool isSpell;
@@ -26,7 +27,7 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
     public event OnSelectItem onSelectItem;
 
 
-    public void Init(item itemOwner, actionButtons actButtons, Transform myList, Transform myDescription, string spellName, Sprite itemIcon, int manaCost)
+    public void Init(item itemOwner, actionButtons actButtons, Transform myList, Transform myDescription, string spellName, Sprite itemIcon, int manaCost, int availableMana)
     {
         this.itemOwner = itemOwner;
 
@@ -42,6 +43,11 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
         if(isSpell)
         {
             manaCostText.text = "" + manaCost;
+            if(availableMana < manaCost)
+            {
+                group.alpha = 0.3f;
+                group.interactable = false;
+            }
         }
     }
 

@@ -19,6 +19,7 @@ public class character : MonoBehaviour
     public bool isPlayer;
 
     public Transform attackPoint;
+    public Transform spellCastPoint;
 
     private Dictionary<string, float> animLength = new Dictionary<string, float>();
     private Material myMat;
@@ -44,7 +45,7 @@ public class character : MonoBehaviour
         Vector3 startPos = transform.position;
 
         PlayAnim("run");
-        while (Vector3.Distance(transform.position, target.attackPoint.position) >= 0.2f)
+        while (Vector3.Distance(transform.position, target.attackPoint.position) >= 0.1f)
         {
             transform.position = Vector3.Lerp(transform.position, target.attackPoint.position, 4 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -58,7 +59,7 @@ public class character : MonoBehaviour
         PlayAnim("return");
         yield return new WaitForSeconds(0.3f);
         PlayAnim("idle");
-        while (Vector3.Distance(transform.position, startPos) >= 0.2f)
+        while (Vector3.Distance(transform.position, startPos) >= 0.1f)
         {
             transform.position = Vector3.Lerp(transform.position, startPos, 8 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -69,10 +70,25 @@ public class character : MonoBehaviour
         onEndTurn?.Invoke(this);
     }
 
+    public IEnumerator SpellAttackAnimation(character target, itemEffect spell)
+    {
+        PlayAnim("spellAttack");
+        yield return new WaitForSeconds(animLength["spellAttack"] / 3f);
+        yield return new WaitForSeconds(animLength["spellAttack"] / 3f);
+        projectile spellProjectile = Instantiate(spell.spellProjectile, spellCastPoint.transform.position, spellCastPoint.transform.rotation);
+        spellProjectile.Init(target, spell, this, isPlayer);
+
+        PlayAnim("idle");
+
+        yield return new WaitForSeconds(2f);
+
+        onEndTurn?.Invoke(this);
+    }
+
     public IEnumerator MoveTo(Transform destination)
     {
         PlayAnim("walk");
-        while (Vector3.Distance(transform.position, destination.position) >= 0.2f)
+        while (Vector3.Distance(transform.position, destination.position) >= 0.1f)
         {
             transform.position = Vector3.Lerp(transform.position, destination.position, 2 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -95,6 +111,11 @@ public class character : MonoBehaviour
             StartCoroutine(DamageFlash());
             PlayAnim("hurt");
         }
+    }
+
+    public void ProcessItemEffect(itemEffect effect, character usingCharacter)
+    {
+        TakeDamage(-(effect.baseDamage + usingCharacter.baseMagic));
     }
 
     public IEnumerator DeathSmoke()

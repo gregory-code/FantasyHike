@@ -16,14 +16,17 @@ public class Enemy : character, IPointerClickHandler
     [SerializeField] Animator spellIndicatorAnim;
 
     [SerializeField] item itemPrefab;
+    [SerializeField] itemEffect itemDrops;
 
     [SerializeField] int maxHealth;
 
     [SerializeField] float yUIadjustment;
 
+    public itemEffect preparedEffect;
+
     public bool hasActed;
 
-    public delegate void OnEnemyClicked(Enemy enemy);
+    public delegate void OnEnemyClicked(Enemy enemy, itemEffect preparedEffect);
     public event OnEnemyClicked onEnemyClicked;
 
     public void Init(BattleManager battleManager)
@@ -47,7 +50,18 @@ public class Enemy : character, IPointerClickHandler
         PlayAnim("dead");
         FindObjectOfType<BattleManager>().RemoveEnemy(this);
 
+        StartCoroutine(SpawnItem());
+
         StartCoroutine(DeathSmoke());
+    }
+
+    private IEnumerator SpawnItem()
+    {
+        yield return new WaitForSeconds(0.4f);
+
+        //item droppedItem = Instantiate(itemPrefab, FindObjectOfType<Inventory>().transform);
+        //droppedItem.transform.localPosition = transform.position;
+        //droppedItem.myEffect = itemDrops;
     }
 
     public void SetAttackIndicator(bool state)
@@ -64,6 +78,6 @@ public class Enemy : character, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        onEnemyClicked?.Invoke(this);
+        onEnemyClicked?.Invoke(this, preparedEffect);
     }
 }

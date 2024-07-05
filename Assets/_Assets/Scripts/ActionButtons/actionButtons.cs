@@ -66,7 +66,7 @@ public class actionButtons : MonoBehaviour
         foreach (item itemSpell in itemSpells)
         {
             usableItem newItem = Instantiate(usableSpellPrefab, spellList);
-            newItem.Init(itemSpell, this, spellList, spellDescription, itemSpell.myEffect.spellName, itemSpell.myEffect.spellIcon, itemSpell.myEffect.manaCost);
+            newItem.Init(itemSpell, this, spellList, spellDescription, itemSpell.myEffect.spellName, itemSpell.myEffect.spellIcon, itemSpell.myEffect.manaCost, owner.GetMana());
             newItem.onSelectItem += SelectItem;
         }
         SortSpells();
@@ -74,7 +74,7 @@ public class actionButtons : MonoBehaviour
         foreach (item itemConsumable in itemConsumables)
         {
             usableItem newItem = Instantiate(usableConsumablePrefab, consumableList);
-            newItem.Init(itemConsumable, this, consumableList, consumbleDescription, itemConsumable.myEffect.itemName, itemConsumable.myEffect.itemIcon, 0);
+            newItem.Init(itemConsumable, this, consumableList, consumbleDescription, itemConsumable.myEffect.itemName, itemConsumable.myEffect.itemIcon, 0, 0);
             newItem.onSelectItem += SelectItem;
         }
 
@@ -175,7 +175,7 @@ public class actionButtons : MonoBehaviour
         }
     }
 
-    private void MadeChoice(Enemy enemy)
+    private void MadeChoice(Enemy enemy, itemEffect preparedEffect)
     {
         TargettingAttack(false);
 
@@ -282,6 +282,7 @@ public class actionButtons : MonoBehaviour
             if (state)
             {
                 enemy.onEnemyClicked += MadeChoice;
+                enemy.preparedEffect = null;
                 enemy.onEnemyClicked += owner.Attack;
             }
             else
@@ -303,14 +304,39 @@ public class actionButtons : MonoBehaviour
             if (state)
             {
                 enemy.onEnemyClicked += MadeChoice;
-                //enemy.onEnemyClicked += owner.Attack;
+                enemy.preparedEffect = usingSpell.itemOwner.myEffect;
+                enemy.onEnemyClicked += owner.SpellAttack;
             }
             else
             {
                 enemy.onEnemyClicked -= MadeChoice;
-                //enemy.onEnemyClicked -= owner.Attack;
+                enemy.preparedEffect = null;
+                enemy.onEnemyClicked -= owner.SpellAttack;
             }
         }
     }
+
+    /*private void TargettingConsumable(bool state, usableItem usingSpell)
+    {
+        Enemy[] enemies = FindObjectsOfType<Enemy>();
+
+        foreach (Enemy enemy in enemies)
+        {
+            enemy.SetSpellIndicator(state);
+
+            if (state)
+            {
+                enemy.onEnemyClicked += MadeChoice;
+                enemy.preparedEffect = usingSpell.itemOwner.myEffect;
+                enemy.onEnemyClicked += owner.SpellAttack;
+            }
+            else
+            {
+                enemy.onEnemyClicked -= MadeChoice;
+                enemy.preparedEffect = null;
+                enemy.onEnemyClicked -= owner.SpellAttack;
+            }
+        }
+    }*/
 
 }

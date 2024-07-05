@@ -24,9 +24,22 @@ public class Player : character
         myUI.Init(this, maxHealth, maxMana);
     }
 
-    public void Attack(Enemy target)
+    public void Attack(Enemy target, itemEffect preparedEffect)
     {
         StartCoroutine(BasicAttackAnimation(target));
+    }
+
+    public void SpellAttack(Enemy target, itemEffect spell)
+    {
+        if (myUI.TryUseMana(spell.manaCost) == false)
+            return;
+        
+        StartCoroutine(SpellAttackAnimation(target, spell));
+    }
+
+    public int GetMana()
+    {
+        return myUI.GetMana();
     }
 
     public void ShowActions()

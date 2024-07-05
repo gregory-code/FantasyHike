@@ -18,6 +18,8 @@ public class itemEffect : ScriptableObject
 
     [Header("Spell Cost")]
     public int manaCost;
+    public int baseDamage;
+    public projectile spellProjectile;
 
     [Header("Description")]
     public description itemDescription;

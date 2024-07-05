@@ -69,6 +69,11 @@ public class playerUI : MonoBehaviour
         return Mathf.Round(value * 1000.0f) * 0.001f;
     }
 
+    public int GetMana()
+    {
+        return currentMana;
+    }
+
     public bool TryUseMana(int cost)
     {
         if(currentMana >= cost)
