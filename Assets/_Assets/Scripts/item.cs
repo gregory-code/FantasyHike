@@ -25,6 +25,8 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     [Header("Public, do not touch")]
 
     public Vector2 itemSize;
+    public List<Vector2> sizeBlanks = new List<Vector2>();
+    private int blankNum;
 
     public Vector2 gridPos;
     
@@ -39,7 +41,8 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     private void Start()
     {
         iconImage.sprite = myEffect.itemIcon;
-        itemSize = myEffect.itemSize;
+        itemSize = new Vector2(myEffect.itemSize.x, myEffect.itemSize.y);
+        sizeBlanks = GetBlanks(0);
 
         itemRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y); // this needs to be done only once, on init
         iconRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y);
@@ -48,6 +51,22 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
 
         inventory.RegistarItem(this); // unregistar item when it's sold
+    }
+
+    private List<Vector2> GetBlanks(int ID)
+    {
+        List<Vector2> newBlanks = new List<Vector2>();
+        if(myEffect.blankMaps.Length <= 2)
+        {
+            return newBlanks;
+        }
+
+        for(int i = 0; i < myEffect.blankMaps[ID].blanks.Length; i ++)
+        {
+            Vector2 newblank = new Vector2(myEffect.blankMaps[ID].blanks[i].x, myEffect.blankMaps[ID].blanks[i].y);
+            newBlanks.Add(newblank);
+        }
+        return newBlanks;
     }
 
     public void SetPos(Vector2 pos)
@@ -82,10 +101,17 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         previousPos = transform.localPosition;
         RemoveItem();
 
-        transform.Rotate(new Vector3(0, 0, 90));
+        transform.Rotate(new Vector3(0, 0, -90));
         float oldX = itemSize.x;
         itemSize.x = itemSize.y;
         itemSize.y = oldX;
+
+        blankNum++;
+        if(blankNum >= 4)
+        {
+            blankNum = 0;
+        }
+        sizeBlanks = GetBlanks(blankNum);
 
         if (forceRotate)
             return;
@@ -116,7 +142,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         inventory.itemDragging = state;
     }
 
-    private void RemoveItem()
+    public void RemoveItem()
     {
         if (!inInventory)
             return;

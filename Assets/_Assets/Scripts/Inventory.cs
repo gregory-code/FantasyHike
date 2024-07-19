@@ -129,11 +129,32 @@ public class Inventory : MonoBehaviour, IDragHandler
         float dimensionX = gridPos.x + (itemSize.x - 1);
         float dimensionY = gridPos.y + (itemSize.y - 1);
 
+        List<Vector2> blanks = new List<Vector2>();
+        for(int i = 0; i < item.sizeBlanks.Count; i ++)
+        {
+            Vector2 newBlank = new Vector2(item.sizeBlanks[i].x - 1, item.sizeBlanks[i].y - 1);
+            newBlank.x += gridPos.x;
+            newBlank.y += gridPos.y;
+            blanks.Add(newBlank);
+        }
+
         for (float i = gridPos.x; i <= dimensionX; i++)
         {
             for (float j = gridPos.y; j <= dimensionY; j++)
             {
                 Vector2 gridCheck = new Vector2(i, j);
+                bool skipHere = false;
+
+                foreach(Vector2 blank in blanks)
+                {
+                    if (gridCheck == blank)
+                    {
+                        skipHere = true;
+                    }
+                }
+
+                if (skipHere)
+                    continue;
 
                 if (gridCheck.x >= 0 && gridCheck.y >= 0 && gridCheck.x < x && gridCheck.y < y)
                 {

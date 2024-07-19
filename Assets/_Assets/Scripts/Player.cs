@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : character
 {
@@ -24,17 +26,35 @@ public class Player : character
         myUI.Init(this, maxHealth, maxMana);
     }
 
-    public void Attack(Enemy target, itemEffect preparedEffect)
+    public void Attack(character target, itemEffect preparedEffect)
     {
         StartCoroutine(BasicAttackAnimation(target));
     }
 
-    public void SpellAttack(Enemy target, itemEffect spell)
+    public void SpellAttack(character target, itemEffect spell)
     {
         if (myUI.TryUseMana(spell.manaCost) == false)
             return;
         
         StartCoroutine(SpellAttackAnimation(target, spell));
+    }
+
+    public void UseConsumable(character target, itemEffect consumable)
+    {
+        StartCoroutine(ConsumableAnimation(target, consumable));
+    }
+
+    private IEnumerator ConsumableAnimation(character target, itemEffect consumeable)
+    {
+        PlayAnim("elixer");
+        yield return new WaitForSeconds(animLength["elixer"] / 3f);
+        yield return new WaitForSeconds(animLength["elixer"] / 3f);
+
+        target.Heal(consumeable.baseValue);
+
+        PlayAnim("idle");
+
+        yield return new WaitForSeconds(0.3f);
     }
 
     public int GetMana()

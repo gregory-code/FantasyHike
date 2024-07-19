@@ -60,6 +60,15 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
         return false;
     }
 
+    public bool IsSelfConsumable()
+    {
+        if(itemOwner.myEffect.targetsSelf && !isSpell)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void SelectThisItem()
     {
         StartCoroutine(SelectThisItemDelay());

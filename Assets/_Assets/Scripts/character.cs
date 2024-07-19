@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
+using static Enemy;
 
 public class character : MonoBehaviour
 {
     [SerializeField] Animator characterAnim;
     [SerializeField] Animator shadowAnim;
+    [SerializeField] Animator spellIndicatorAnim;
+    [SerializeField] Animator itemIndicatorAnim;
     [SerializeField] SpriteRenderer characterRenderer;
     [SerializeField] GameObject damagePopup;
     [SerializeField] GameObject deathSmoke;
@@ -20,8 +24,9 @@ public class character : MonoBehaviour
 
     public Transform attackPoint;
     public Transform spellCastPoint;
+    public itemEffect preparedEffect;
 
-    private Dictionary<string, float> animLength = new Dictionary<string, float>();
+    public Dictionary<string, float> animLength = new Dictionary<string, float>();
     private Material myMat;
     private BoxCollider2D myCollider;
 
@@ -30,6 +35,9 @@ public class character : MonoBehaviour
 
     public delegate void OnHealthChanged(int change);
     public event OnHealthChanged onHealthChanged;
+
+    public delegate void OnCharacterClicked(character target, itemEffect preparedEffect);
+    public event OnCharacterClicked onCharacterClicked;
 
     private void Awake()
     {
@@ -113,6 +121,15 @@ public class character : MonoBehaviour
         }
     }
 
+    public void Heal(int health)
+    {
+        if(health > 0)
+        {
+            onHealthChanged?.Invoke(health);
+            //do a particle here
+        }
+    }
+
     public void ProcessItemEffect(itemEffect effect, character usingCharacter)
     {
         TakeDamage(-(effect.baseDamage + usingCharacter.baseMagic));
@@ -170,6 +187,17 @@ public class character : MonoBehaviour
         shadowAnim.SetTrigger(name);
     }
 
+    public void SetSpellIndicator(bool state)
+    {
+        spellIndicatorAnim.SetBool("show", state);
+        spellIndicatorAnim.SetBool("finish", !state);
+    }
+
+    public void SetItemIndicator(bool state)
+    {
+        itemIndicatorAnim.SetBool("show", state);
+        itemIndicatorAnim.SetBool("finish", !state);
+    }
     private void GetAnimLengths()
     {
         animLength.Clear();
@@ -178,5 +206,11 @@ public class character : MonoBehaviour
         {
             animLength.Add(clip.name, clip.length);
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("Clicked!");
+        onCharacterClicked?.Invoke(this, preparedEffect);
     }
 }

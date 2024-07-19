@@ -13,11 +13,17 @@ MonoBehaviour:
   m_Name: Potion
   m_EditorClassIdentifier: 
   itemSize: {x: 1, y: 1}
-  itemName: Potion
-  spellName: 
+  itemName: Health Potion
   itemIcon: {fileID: 21300000, guid: 1d35a5e12e30096458d2f82c84d31a35, type: 3}
-  spellIcon: {fileID: 0}
   manaCost: 0
-  itemDescription: {fileID: 0}
+  baseDamage: 0
+  spellName: 
+  spellIcon: {fileID: 0}
+  spellProjectile: {fileID: 0}
+  baseValue: 5
+  particle: {fileID: 0}
+  itemDescription: {fileID: -393533310392563367, guid: a4ba1f24df9d292449e72c0dab43aa86,
+    type: 3}
   targetsEnemies: 0
+  targetsSelf: 1
   myType: 0
