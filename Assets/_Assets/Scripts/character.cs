@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
-using static Enemy;
+using UnityEngine.Pool;
 
 public class character : MonoBehaviour
 {
@@ -15,6 +15,8 @@ public class character : MonoBehaviour
     [SerializeField] SpriteRenderer characterRenderer;
     [SerializeField] GameObject damagePopup;
     [SerializeField] GameObject deathSmoke;
+
+    //public IObjectPool<Animator> pool;
 
     [Header("Stats")]
     public int baseStrength;

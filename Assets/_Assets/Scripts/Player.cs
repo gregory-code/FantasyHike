@@ -4,7 +4,6 @@ using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEngine.GraphicsBuffer;
 
 public class Player : character
 {
@@ -51,6 +50,8 @@ public class Player : character
         yield return new WaitForSeconds(animLength["elixer"] / 3f);
 
         target.Heal(consumeable.baseValue);
+
+
 
         PlayAnim("idle");
 

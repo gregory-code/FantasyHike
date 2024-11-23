@@ -27,7 +27,18 @@ public class DragIndicator : MonoBehaviour
         Vector2 mousePos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(owner.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out mousePos);
         myTransform.anchoredPosition = mousePos;
-        myTransform.anchoredPosition += new Vector2(-45 * (itemSize.x) + (itemSize.x * 20f) - 40, 45 * (itemSize.y) - (itemSize.y * 20f) + 40);
+        if(itemSize.x > itemSize.y)
+        {
+            myTransform.anchoredPosition += new Vector2(-45 * (itemSize.x) + (itemSize.x * -5f) - 40, 45 * (itemSize.y) - (itemSize.y * 20f) + 40);
+        }
+        else if(itemSize.y > itemSize.x)
+        {
+            myTransform.anchoredPosition += new Vector2(-45 * (itemSize.x) + (itemSize.x * 20f) - 40, 45 * (itemSize.y) - (itemSize.y * 5f) + 40);
+        }
+        else
+        {
+            myTransform.anchoredPosition += new Vector2(-45 * (itemSize.x) + (itemSize.x * 20f) - 40, 45 * (itemSize.y) - (itemSize.y * 20f) + 40);
+        }
     }
 
     public void EndDrag()
