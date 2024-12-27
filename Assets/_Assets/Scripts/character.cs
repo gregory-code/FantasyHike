@@ -6,31 +6,40 @@ using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
 using UnityEngine.Pool;
 
-public class character : MonoBehaviour
+public class character : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] Animator characterAnim;
-    [SerializeField] Animator shadowAnim;
+    [Header("Prefabs")]
     [SerializeField] Animator spellIndicatorAnim;
     [SerializeField] Animator itemIndicatorAnim;
-    [SerializeField] SpriteRenderer characterRenderer;
     [SerializeField] GameObject damagePopup;
+    [SerializeField] GameObject healPopup;
     [SerializeField] GameObject deathSmoke;
+
+    private SpriteRenderer characterRenderer;
+    private Animator characterAnim;
+    private Animator shadowAnim;
+    private BoxCollider2D myCollider;
+    private Material myMat;
+    
+    private Transform attackPoint;
+    private Transform spellCastPoint;
+
+    public item preparedEffect;
 
     //public IObjectPool<Animator> pool;
 
     [Header("Stats")]
+    public int currentHealth;
+    public int maxHealth;
     public int baseStrength;
     public int baseMagic;
 
     public bool isPlayer;
 
-    public Transform attackPoint;
-    public Transform spellCastPoint;
-    public itemEffect preparedEffect;
+
+    /// ///////////////////////////////////////////////////////////
 
     public Dictionary<string, float> animLength = new Dictionary<string, float>();
-    private Material myMat;
-    private BoxCollider2D myCollider;
 
     public delegate void OnEndTurn(character character);
     public event OnEndTurn onEndTurn;
@@ -38,16 +47,26 @@ public class character : MonoBehaviour
     public delegate void OnHealthChanged(int change);
     public event OnHealthChanged onHealthChanged;
 
-    public delegate void OnCharacterClicked(character target, itemEffect preparedEffect);
+    public delegate void OnCharacterClicked(character target, item preparedEffect);
     public event OnCharacterClicked onCharacterClicked;
 
     private void Awake()
     {
-        GetAnimLengths();
-
+        characterRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        characterAnim = transform.GetChild(0).GetComponent<Animator>();
+        shadowAnim = transform.GetChild(0).GetChild(0).GetComponent<Animator>();
         myCollider = characterRenderer.GetComponent<BoxCollider2D>();
-
         myMat = characterRenderer.material;
+
+        attackPoint = transform.GetChild(1).GetComponent<Transform>();
+        spellCastPoint = transform.GetChild(2).GetComponent<Transform>();
+
+        GetAnimLengths();
+    }
+
+    public void SetPreparedEffect(item itemEffect)
+    {
+        preparedEffect = itemEffect;
     }
 
     public IEnumerator BasicAttackAnimation(character target)
@@ -80,7 +99,7 @@ public class character : MonoBehaviour
         onEndTurn?.Invoke(this);
     }
 
-    public IEnumerator SpellAttackAnimation(character target, itemEffect spell)
+    public IEnumerator SpellAttackAnimation(character target, item spell)
     {
         PlayAnim("spellAttack");
         yield return new WaitForSeconds(animLength["spellAttack"] / 3f);
@@ -90,9 +109,22 @@ public class character : MonoBehaviour
 
         PlayAnim("idle");
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.2f);
 
         onEndTurn?.Invoke(this);
+    }
+
+    public IEnumerator ConsumableAnimation(character target, item consumeable)
+    {
+        PlayAnim("elixer");
+        yield return new WaitForSeconds(animLength["elixer"] / 3f);
+        yield return new WaitForSeconds(animLength["elixer"] / 3f);
+
+        StartCoroutine(ProcessItemEffect(consumeable, this, target));
+
+        Instantiate(consumeable.particle, characterRenderer.transform);
+
+        PlayAnim("idle");
     }
 
     public IEnumerator MoveTo(Transform destination)
@@ -112,11 +144,7 @@ public class character : MonoBehaviour
         {
             onHealthChanged?.Invoke(damage);
 
-            Vector3 randomPos = new Vector3(Random.Range(myCollider.bounds.min.x, myCollider.bounds.max.x), Random.Range(myCollider.bounds.min.y, myCollider.bounds.max.y), 4);
-            Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(-10f, 10f));
-            GameObject popup = Instantiate(damagePopup, randomPos, randomRotation);
-            popup.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "" + damage;
-            Destroy(popup, 1.5f);
+            SpawnPopup(damagePopup, damage);
 
             StartCoroutine(DamageFlash());
             PlayAnim("hurt");
@@ -127,14 +155,18 @@ public class character : MonoBehaviour
     {
         if(health > 0)
         {
+            SpawnPopup(healPopup, health);
             onHealthChanged?.Invoke(health);
-            //do a particle here
         }
     }
 
-    public void ProcessItemEffect(itemEffect effect, character usingCharacter)
+    public IEnumerator ProcessItemEffect(item effect, character usingCharacter, character recivingCharacter)
     {
-        TakeDamage(-(effect.baseDamage + usingCharacter.baseMagic));
+        effect.UseItem(effect, usingCharacter, recivingCharacter);
+
+        yield return new WaitForSeconds(1.2f);
+
+        onEndTurn?.Invoke(this);
     }
 
     public IEnumerator DeathSmoke()
@@ -146,6 +178,16 @@ public class character : MonoBehaviour
         Destroy(smoke.gameObject, 1.5f);
 
         Destroy(this.gameObject);
+    }
+
+    public void SpawnPopup(GameObject toSpawn, int damage)
+    {
+        Vector3 randomPos = new Vector3(Random.Range(myCollider.bounds.min.x, myCollider.bounds.max.x), Random.Range(myCollider.bounds.min.y, myCollider.bounds.max.y), 4);
+        Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(-10f, 10f));
+
+        GameObject popup = Instantiate(toSpawn, randomPos, randomRotation);
+        popup.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "" + damage;
+        Destroy(popup, 1.5f);
     }
 
     public IEnumerator DamageFlash()

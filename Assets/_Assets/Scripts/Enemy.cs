@@ -7,6 +7,7 @@ using UnityEngine.TextCore.Text;
 
 public class Enemy : character, IPointerClickHandler
 {
+    [Header("Enemy")]
     [SerializeField] enemyUI enemyUIPrefab;
     private enemyUI myUI;
 
@@ -15,13 +16,11 @@ public class Enemy : character, IPointerClickHandler
     [SerializeField] Animator attackIndicatorAnim;
 
     [SerializeField] item itemPrefab;
-    [SerializeField] itemEffect itemDrops;
-
-    [SerializeField] int maxHealth;
+    [SerializeField] item itemDrops;
 
     [SerializeField] float yUIadjustment;
 
-    public bool hasActed;
+    private bool bHasActed;
 
     public void Init(BattleManager battleManager)
     {
@@ -42,11 +41,21 @@ public class Enemy : character, IPointerClickHandler
     private void Dead()
     {
         PlayAnim("dead");
-        FindObjectOfType<BattleManager>().RemoveEnemy(this);
+        battleManager.RemoveEnemy(this);
 
         StartCoroutine(SpawnItem());
 
         StartCoroutine(DeathSmoke());
+    }
+
+    public bool HasActed()
+    {
+        return bHasActed;
+    }
+
+    public void SetHasActed(bool state)
+    {
+        bHasActed = state;
     }
 
     private IEnumerator SpawnItem()

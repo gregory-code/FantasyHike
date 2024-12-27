@@ -7,6 +7,9 @@ using UnityEngine.EventSystems;
 
 public class Player : character
 {
+    [Header("Player")]
+    [SerializeField] int maxMana;
+
     [SerializeField] playerUI playerUIPrefab;
     private playerUI myUI;
 
@@ -15,9 +18,6 @@ public class Player : character
 
     [SerializeField] Inventory inventory;
 
-    [SerializeField] int maxHealth;
-    [SerializeField] int maxMana;
-
     private void Start()
     {
         myUI = Instantiate(playerUIPrefab, transform);
@@ -25,12 +25,12 @@ public class Player : character
         myUI.Init(this, maxHealth, maxMana);
     }
 
-    public void Attack(character target, itemEffect preparedEffect)
+    public void Attack(character target, item preparedEffect)
     {
         StartCoroutine(BasicAttackAnimation(target));
     }
 
-    public void SpellAttack(character target, itemEffect spell)
+    public void SpellAttack(character target, item spell)
     {
         if (myUI.TryUseMana(spell.manaCost) == false)
             return;
@@ -38,24 +38,9 @@ public class Player : character
         StartCoroutine(SpellAttackAnimation(target, spell));
     }
 
-    public void UseConsumable(character target, itemEffect consumable)
+    public void UseConsumable(character target, item consumable)
     {
         StartCoroutine(ConsumableAnimation(target, consumable));
-    }
-
-    private IEnumerator ConsumableAnimation(character target, itemEffect consumeable)
-    {
-        PlayAnim("elixer");
-        yield return new WaitForSeconds(animLength["elixer"] / 3f);
-        yield return new WaitForSeconds(animLength["elixer"] / 3f);
-
-        target.Heal(consumeable.baseValue);
-
-
-
-        PlayAnim("idle");
-
-        yield return new WaitForSeconds(0.3f);
     }
 
     public int GetMana()

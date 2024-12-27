@@ -25,7 +25,7 @@ public class BattleManager : MonoBehaviour
         if(character.isPlayer == false)
         {
             Enemy enemy = character.GetComponent<Enemy>();
-            enemy.hasActed = true;
+            enemy.SetHasActed(true);
         }
         NextTurn();
     }
@@ -35,7 +35,7 @@ public class BattleManager : MonoBehaviour
         List<Enemy> remainingEnemies = new List<Enemy>();
         foreach(Enemy enemy in enemies)
         {
-            if(enemy.hasActed == false)
+            if(enemy.HasActed() == false)
             {
                 remainingEnemies.Add(enemy);
             }
@@ -49,7 +49,7 @@ public class BattleManager : MonoBehaviour
         {
             foreach(Enemy enemy in enemies)
             {
-                enemy.hasActed = false;
+                enemy.SetHasActed(false);
             }
             player.ShowActions();
         }

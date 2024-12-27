@@ -78,9 +78,9 @@ public class Inventory : MonoBehaviour, IDragHandler
 
         foreach(item item in items)
         {
-            if(item.inInventory)
+            if(item.InInventory())
             {
-                slot itemsSlot = GetSlotFromGridPos(item.gridPos);
+                slot itemsSlot = GetSlotFromGridPos(item.GetGridPos());
                 item.transform.SetAsLastSibling();
                 itemsSlot.TryPlaceItem(item);
                 item.SetPos(itemsSlot.transform.localPosition);
@@ -108,12 +108,12 @@ public class Inventory : MonoBehaviour, IDragHandler
         }
     }
 
-    public List<item> GetItemType(itemEffect.itemType type)
+    public List<item> GetItemType(item.itemType type)
     {
         List<item> consumables = new List<item>();
         foreach(item item in items)
         {
-            if(item.myEffect.myType == type)
+            if(item.myType == type)
             {
                 consumables.Add(item);
             }
@@ -130,9 +130,9 @@ public class Inventory : MonoBehaviour, IDragHandler
         float dimensionY = gridPos.y + (itemSize.y - 1);
 
         List<Vector2> blanks = new List<Vector2>();
-        for(int i = 0; i < item.sizeBlanks.Count; i ++)
+        for(int i = 0; i < item.GetSizeBlanks().Count; i ++)
         {
-            Vector2 newBlank = new Vector2(item.sizeBlanks[i].x - 1, item.sizeBlanks[i].y - 1);
+            Vector2 newBlank = new Vector2(item.GetSizeBlanks()[i].x - 1, item.GetSizeBlanks()[i].y - 1);
             newBlank.x += gridPos.x;
             newBlank.y += gridPos.y;
             blanks.Add(newBlank);
@@ -166,7 +166,8 @@ public class Inventory : MonoBehaviour, IDragHandler
                 }
                 else
                 {
-                    possibleSlots[0].badgroup = true;
+                    if (possibleSlots.Count >= 1)
+                        possibleSlots[0].badgroup = true;
                 }
             }
         }

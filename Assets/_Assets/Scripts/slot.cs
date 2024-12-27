@@ -62,7 +62,7 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public bool TryPlaceItem(item item)
     {
-        item.inInventory = true;
+        item.SetInInventory(true);
 
         List<slot> possibleSlots = owner.GetPossibleSlots(item, gridPos);
 
@@ -78,7 +78,7 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             slot.myItem = item;
         }
-        item.gridPos = gridPos;
+        item.SetGridPos(gridPos);
         item.SetPos(this.transform.localPosition);
         return true;
     }

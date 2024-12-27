@@ -30,6 +30,8 @@ public class playerUI : MonoBehaviour
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
 
+        owner.currentHealth = currentHealth;
+
         this.maxMana = maxMana;
         this.currentMana = maxMana;
 
@@ -45,6 +47,7 @@ public class playerUI : MonoBehaviour
         currentHealth += change;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         healthText.text = $"{currentHealth} / {maxHealth}";
+        owner.currentHealth = currentHealth;
         StartCoroutine(LerpValue(health, currentHealth, maxHealth));
 
         if (currentHealth <= 0)

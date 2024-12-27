@@ -25,6 +25,8 @@ public class enemyUI : MonoBehaviour
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
 
+        owner.currentHealth = currentHealth;
+
         healthText.text = $"{currentHealth} / {maxHealth}";
 
         health.fillAmount = 1f;
@@ -35,6 +37,7 @@ public class enemyUI : MonoBehaviour
         currentHealth += change;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         healthText.text = $"{currentHealth} / {maxHealth}";
+        owner.currentHealth = currentHealth;
         StartCoroutine(LerpValue(health, currentHealth, maxHealth));
 
         if (currentHealth <= 0)

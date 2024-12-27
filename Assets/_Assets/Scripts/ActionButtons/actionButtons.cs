@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class actionButtons : MonoBehaviour
@@ -55,8 +56,8 @@ public class actionButtons : MonoBehaviour
         spellCanvas.worldCamera = Camera.main;
         itemCanvas.worldCamera = Camera.main;
 
-        List<item> itemSpells = inventory.GetItemType(itemEffect.itemType.spell);
-        List<item> itemConsumables = inventory.GetItemType(itemEffect.itemType.consumable);
+        List<item> itemSpells = inventory.GetItemType(item.itemType.spell);
+        List<item> itemConsumables = inventory.GetItemType(item.itemType.consumable);
 
         spellBtn.InteractState(itemSpells.Count > 0, unusableSprite, spellSprite);
         itemBtn.InteractState(itemConsumables.Count > 0, unusableSprite, itemSprite);
@@ -66,7 +67,7 @@ public class actionButtons : MonoBehaviour
         foreach (item itemSpell in itemSpells)
         {
             usableItem newItem = Instantiate(usableSpellPrefab, spellList);
-            newItem.Init(itemSpell, this, spellList, spellDescription, itemSpell.myEffect.spellName, itemSpell.myEffect.spellIcon, itemSpell.myEffect.manaCost, owner.GetMana());
+            newItem.Init(itemSpell, this, spellList, spellDescription, itemSpell.spellName, itemSpell.spellIcon, itemSpell.manaCost, owner.GetMana());
             newItem.onSelectItem += SelectItem;
         }
         SortSpells();
@@ -74,7 +75,7 @@ public class actionButtons : MonoBehaviour
         foreach (item itemConsumable in itemConsumables)
         {
             usableItem newItem = Instantiate(usableConsumablePrefab, consumableList);
-            newItem.Init(itemConsumable, this, consumableList, consumbleDescription, itemConsumable.myEffect.itemName, itemConsumable.myEffect.itemIcon, 0, 0);
+            newItem.Init(itemConsumable, this, consumableList, consumbleDescription, itemConsumable.itemName, itemConsumable.itemIcon, 0, 0);
             newItem.onSelectItem += SelectItem;
         }
 
@@ -147,8 +148,8 @@ public class actionButtons : MonoBehaviour
             TargettingConsumable(true, selectingItem);
         }
 
-        description descrip = Instantiate(selectingItem.itemOwner.myEffect.itemDescription, selectingItem.description);
-        descrip.SetStats(owner.baseStrength, owner.baseMagic);
+        description descrip = Instantiate(selectingItem.itemOwner.itemDescription, selectingItem.description);
+        descrip.SetStats(owner, selectingItem.itemOwner);
         descrip.transform.localPosition = Vector3.zero;
 
         selectingItem.transform.SetParent(selectingItem.list.transform.parent);
@@ -185,7 +186,7 @@ public class actionButtons : MonoBehaviour
         }
     }
 
-    private void MadeChoice(character choice, itemEffect preparedEffect)
+    private void MadeChoice(character choice, item preparedEffect)
     {
         TargettingAttack(false);
 
@@ -198,8 +199,6 @@ public class actionButtons : MonoBehaviour
 
             if(currentUsableItem.IsSelfConsumable())
             {
-                currentUsableItem.itemOwner.RemoveItem();
-                Destroy(currentUsableItem.itemOwner.gameObject);
                 TargettingConsumable(false, currentUsableItem);
             }
         }
@@ -279,7 +278,7 @@ public class actionButtons : MonoBehaviour
         {
             foreach (usableItem spell in spells)
             {
-                if (spell.itemOwner.myEffect.manaCost == i)
+                if (spell.itemOwner.manaCost == i)
                 {
                     spell.transform.SetAsLastSibling();
                 }
@@ -299,7 +298,7 @@ public class actionButtons : MonoBehaviour
             if (state)
             {
                 enemy.onCharacterClicked += MadeChoice;
-                enemy.preparedEffect = null;
+                enemy.SetPreparedEffect(null);
                 enemy.onCharacterClicked += owner.Attack;
             }
             else
@@ -312,42 +311,65 @@ public class actionButtons : MonoBehaviour
 
     private void TargettingSpell(bool state, usableItem usingSpell)
     {
-        Enemy[] enemies = FindObjectsOfType<Enemy>();
-
-        foreach (Enemy enemy in enemies)
+        List<character> targettingCharacters = new List<character>();
+        if(usingSpell.itemOwner.targetsEnemies)
         {
-            enemy.SetSpellIndicator(state);
+            targettingCharacters = FindObjectsOfType<Enemy>().ToList<character>();
+        }
+
+        if (usingSpell.itemOwner.targetsSelf)
+        {
+            targettingCharacters.Add(owner);
+        }
+
+        foreach (character target in targettingCharacters)
+        {
+            target.SetSpellIndicator(state);
 
             if (state)
             {
-                enemy.onCharacterClicked += MadeChoice;
-                enemy.preparedEffect = usingSpell.itemOwner.myEffect;
-                enemy.onCharacterClicked += owner.SpellAttack;
+                target.onCharacterClicked += MadeChoice;
+                target.SetPreparedEffect(usingSpell.itemOwner);
+                target.onCharacterClicked += owner.SpellAttack;
             }
             else
             {
-                enemy.onCharacterClicked -= MadeChoice;
-                enemy.preparedEffect = null;
-                enemy.onCharacterClicked -= owner.SpellAttack;
+                target.onCharacterClicked -= MadeChoice;
+                target.SetPreparedEffect(null);
+                target.onCharacterClicked -= owner.SpellAttack;
             }
         }
     }
 
     private void TargettingConsumable(bool state, usableItem usingConsumable)
     {
-        owner.SetItemIndicator(state);
-
-        if (state)
+        List<character> targettingCharacters = new List<character>();
+        if (usingConsumable.itemOwner.targetsEnemies)
         {
-            owner.onCharacterClicked += MadeChoice;
-            owner.preparedEffect = usingConsumable.itemOwner.myEffect;
-            owner.onCharacterClicked += owner.UseConsumable;
+            targettingCharacters = FindObjectsOfType<Enemy>().ToList<character>();
         }
-        else
+
+        if (usingConsumable.itemOwner.targetsSelf)
         {
-            owner.onCharacterClicked -= MadeChoice;
-            owner.preparedEffect = null;
-            owner.onCharacterClicked -= owner.UseConsumable;
+            targettingCharacters.Add(owner);
+        }
+
+        foreach (character target in targettingCharacters)
+        {
+            target.SetItemIndicator(state);
+
+            if (state)
+            {
+                target.onCharacterClicked += MadeChoice;
+                target.SetPreparedEffect(usingConsumable.itemOwner);
+                target.onCharacterClicked += owner.UseConsumable;
+            }
+            else
+            {
+                target.onCharacterClicked -= MadeChoice;
+                target.SetPreparedEffect(null);
+                target.onCharacterClicked -= owner.UseConsumable;
+            }
         }
     }
 

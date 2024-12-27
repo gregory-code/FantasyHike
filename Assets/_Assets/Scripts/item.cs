@@ -10,27 +10,54 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     private Canvas canvas;
     private Inventory inventory;
 
-    [SerializeField] RectTransform itemRectTransform;
-    [SerializeField] RectTransform iconRectTransform;
-    [SerializeField] Image iconImage;
-
-    public itemEffect myEffect;
+    private RectTransform itemRectTransform;
+    private RectTransform iconRectTransform;
+    private Image iconImage;
     
     private List<slot> slots = new List<slot>();
+    private List<Vector2> sizeBlanks = new List<Vector2>();
     private Vector2 previousPos;
     private bool isClicked;
     private bool wasFlipped;
     private bool wasInInventory;
-
-    [Header("Public, do not touch")]
-
-    public Vector2 itemSize;
-    public List<Vector2> sizeBlanks = new List<Vector2>();
+    private bool inInventory;
+    private Vector2 gridPos;
     private int blankNum;
 
-    public Vector2 gridPos;
-    
-    public bool inInventory;
+    [Header("Item")]
+
+    public Vector2 itemSize;
+    public blankMap[] blankMaps;
+
+    public itemType myType;
+    public enum itemType
+    {
+        consumable,
+        spell,
+        effect
+    };
+
+    [Header("Name")]
+    public string itemName;
+
+    [Header("Icon")]
+    public Sprite itemIcon;
+
+    [Header("Spell Specific")]
+    public int manaCost;
+    public string spellName;
+    public Sprite spellIcon;
+    public projectile spellProjectile;
+
+    [Header("Item Specific")]
+    public GameObject particle;
+
+    [Header("All Effects")]
+    public int baseValue;
+
+    public description itemDescription;
+    public bool targetsEnemies;
+    public bool targetsSelf;
 
     public delegate void OnDropItem(item item);
     public event OnDropItem onDropItem;
@@ -38,10 +65,16 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     public delegate void OnItemAdjusted(item item, bool added);
     public event OnItemAdjusted onItemAdjusted;
 
+    public delegate void OnUseItem(item usingItem, character usingCharacter, character recivingCharacter);
+    public event OnUseItem onUseItem;
+
     private void Start()
     {
-        iconImage.sprite = myEffect.itemIcon;
-        itemSize = new Vector2(myEffect.itemSize.x, myEffect.itemSize.y);
+        itemRectTransform = GetComponent<RectTransform>();
+        iconRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        iconImage = transform.GetChild(0).GetComponent<Image>();
+
+        iconImage.sprite = itemIcon;
         sizeBlanks = GetBlanks(0);
 
         itemRectTransform.sizeDelta = new Vector2(90 * itemSize.x, 90 * itemSize.y); // this needs to be done only once, on init
@@ -53,17 +86,22 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         inventory.RegistarItem(this); // unregistar item when it's sold
     }
 
+    public void UseItem(item usingItem, character usingCharacter, character recivingCharacter)
+    {
+        onUseItem?.Invoke(usingItem, usingCharacter, recivingCharacter);
+    }
+
     private List<Vector2> GetBlanks(int ID)
     {
         List<Vector2> newBlanks = new List<Vector2>();
-        if(myEffect.blankMaps.Length <= 2)
+        if(blankMaps.Length <= 2)
         {
             return newBlanks;
         }
 
-        for(int i = 0; i < myEffect.blankMaps[ID].blanks.Length; i ++)
+        for(int i = 0; i < blankMaps[ID].blanks.Length; i ++)
         {
-            Vector2 newblank = new Vector2(myEffect.blankMaps[ID].blanks[i].x, myEffect.blankMaps[ID].blanks[i].y);
+            Vector2 newblank = new Vector2(blankMaps[ID].blanks[i].x, blankMaps[ID].blanks[i].y);
             newBlanks.Add(newblank);
         }
         return newBlanks;
@@ -156,6 +194,31 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
                 slot.myItem = null;
             }
         }
+    }
+
+    public bool InInventory()
+    {
+        return inInventory;
+    }
+
+    public void SetInInventory(bool state)
+    {
+        inInventory = state;
+    }
+
+    public Vector2 GetGridPos()
+    {
+        return gridPos;
+    }
+
+    public void SetGridPos(Vector2 newGridPos)
+    {
+        gridPos = newGridPos;
+    }
+
+    public List<Vector2> GetSizeBlanks()
+    {
+        return sizeBlanks;
     }
 
     public void ItemPressed()

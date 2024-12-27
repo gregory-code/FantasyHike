@@ -53,7 +53,7 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
 
     public bool IsAttackingSpell()
     {
-        if(itemOwner.myEffect.targetsEnemies && isSpell)
+        if(itemOwner.targetsEnemies && isSpell)
         {
             return true;
         }
@@ -62,7 +62,7 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
 
     public bool IsSelfConsumable()
     {
-        if(itemOwner.myEffect.targetsSelf && !isSpell)
+        if(itemOwner.targetsSelf && !isSpell)
         {
             return true;
         }

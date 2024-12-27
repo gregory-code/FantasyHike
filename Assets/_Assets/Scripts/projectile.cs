@@ -7,12 +7,12 @@ public class projectile : MonoBehaviour
     [SerializeField] GameObject hitVFX;
     [SerializeField] float speed;
     private Vector3 targetPos;
-    private itemEffect spell;
+    private item spell;
     private character target;
 
     private character usingCharacter;
 
-    public void Init(character target, itemEffect spell, character usingCharacter, bool isEnemy)
+    public void Init(character target, item spell, character usingCharacter, bool isEnemy)
     {
         this.target = target;
         this.spell = spell;
@@ -29,7 +29,7 @@ public class projectile : MonoBehaviour
             GameObject hit = Instantiate(hitVFX, transform.position, transform.rotation);
             hit.transform.SetParent(null);
 
-            target.ProcessItemEffect(spell, usingCharacter);
+            StartCoroutine(target.ProcessItemEffect(spell, usingCharacter, target));
 
             Destroy(hit, 1f);
             Destroy(this.gameObject);
