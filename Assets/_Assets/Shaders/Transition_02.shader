@@ -2,14 +2,13 @@ Shader "Unlit/Transition_02"
 {
     Properties
     {
-        _MainTex ("Main Texture", 2D) = "black" {}
+        _MainTex ("Main Texture", 2D) = "white" {}
         _Transition ("Transition", Range(0, 1)) = 0
         _Feather ("Feather Amount", Range(0, 0.2)) = 0.05
-        _WarpIntensity ("Warp Intensity", Range(0, 0.2)) = 0.1
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" }
+        Tags { "RenderType"="Transparent" "Queue"="Overlay" }
         LOD 100
 
         Pass
@@ -38,7 +37,6 @@ Shader "Unlit/Transition_02"
             float4 _MainTex_ST;
             float _Transition;
             float _Feather;
-            float _WarpIntensity;
 
             v2f vert (appdata v)
             {
@@ -53,20 +51,19 @@ Shader "Unlit/Transition_02"
                 // Sample the main texture
                 fixed4 col = tex2D(_MainTex, i.uv);
 
-                // Generate procedural warp using sine waves
-                float warp = sin(i.uv.y * 20.0) * _WarpIntensity + cos(i.uv.x * 15.0) * _WarpIntensity;
+                // Calculate distance from the center of the screen
+                float dist = distance(i.uv, float2(0.5, 0.5)); // Calculate distance to the center
 
-                // Calculate the warped wipe threshold
-                float uvWipe = i.uv.x + warp;
-                float alpha = smoothstep(_Transition - _Feather, _Transition + _Feather, uvWipe);
+                // Create a radial wipe effect (a growing circle)
+                float alpha = smoothstep(_Transition - _Feather, _Transition + _Feather, dist);
 
-                // Ensure the transition starts as black
-                fixed4 resultColor = fixed4(0.0, 0.0, 0.0, alpha); // Set color to black with alpha
+                // Ensure black background and alpha-controlled blending
+                fixed4 resultColor = fixed4(0.0, 0.0, 0.0, alpha); // Black background with transition alpha
 
-                // Blend the black background to the texture based on alpha
-                resultColor.rgb = lerp(resultColor.rgb, col.rgb, alpha); // Blend black to the texture color
+                // Blend the texture based on the transition alpha (ensure no white values appear)
+                resultColor.rgb = lerp(resultColor.rgb, col.rgb, alpha); // Blend texture with black background
 
-                return resultColor;
+                return fixed4(0.0, 0.0, 0.0, alpha);
             }
             ENDCG
         }

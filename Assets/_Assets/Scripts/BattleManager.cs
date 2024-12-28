@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
+    [Header("Screen Transition")]
+    [SerializeField] Image screenTransition;
+    float transitionValue;
+    [SerializeField] Material[] transitionMaterials;
+
     [SerializeField] Transform playerPos;
     [SerializeField] Transform enemyPos;
 
     [SerializeField] Enemy slime;
+
 
     private Player player;
 
@@ -15,9 +22,26 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(SetUpRandomTransition());
+
         player = FindObjectOfType<Player>();
         player.onEndTurn += CharacterEndedTurn;
         StartCoroutine(SetupFight());
+    }
+
+    private IEnumerator SetUpRandomTransition()
+    {
+        int randomTransition = Random.Range(0, 3);
+        screenTransition.material = transitionMaterials[randomTransition];
+        transitionValue = 0;
+        transitionMaterials[randomTransition].SetFloat("_Transition", 0);
+
+        while(transitionValue < 1)
+        {
+            yield return new WaitForEndOfFrame();
+            transitionValue += Time.deltaTime;
+            transitionMaterials[randomTransition].SetFloat("_Transition", transitionValue);
+        }
     }
 
     private void CharacterEndedTurn(character character)
@@ -51,7 +75,9 @@ public class BattleManager : MonoBehaviour
             {
                 enemy.SetHasActed(false);
             }
-            player.ShowActions();
+
+            if(enemies.Count > 0)
+                player.ShowActions();
         }
     }
 

@@ -38,6 +38,17 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         effect
     };
 
+    public itemRariety myRariety;
+
+    public enum itemRariety
+    {
+        common,
+        uncommon,
+        rare,
+        epic,
+        legendary
+    };
+
     [Header("Name")]
     public string itemName;
 
