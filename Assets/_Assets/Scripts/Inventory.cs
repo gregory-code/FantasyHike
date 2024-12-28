@@ -62,8 +62,10 @@ public class Inventory : MonoBehaviour, IDragHandler
                 if (ItemLibrary[i].itemName == saveManager.saveData.itemNames[x])
                 {
                     item newItem = Instantiate(ItemLibrary[i], this.transform);
+                    slot placingSlot = GetSlotFromGridPos(saveManager.saveData.itemGridPos[x]);
                     items.Add(newItem);
-                    newItem.Init(GetSlotFromGridPos(saveManager.saveData.itemGridPos[x]).transform.localPosition); // slot local position
+                    newItem.Init(placingSlot.transform.localPosition); // slot local position
+                    placingSlot.TryPlaceItem(newItem);
                 }
             }
         }    
@@ -141,9 +143,16 @@ public class Inventory : MonoBehaviour, IDragHandler
         moneyText.transform.localPosition = new Vector2(-28.33f * x, 0);
     }
 
-    public void RegistarItem(item item)
+    public void RegistarItem(item item, bool needsRegistaring)
     {
-        item.onItemAdjusted += ItemAdjusted; // make sure to unregistar I think
+        if(needsRegistaring)
+        {
+            item.onItemAdjusted += ItemAdjusted; // make sure to unregistar I think
+        }
+        else
+        {
+            item.onItemAdjusted -= ItemAdjusted; // make sure to unregistar I think
+        }
     }
 
     private void ItemAdjusted(item item, bool added)

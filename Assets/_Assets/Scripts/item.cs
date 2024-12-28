@@ -49,6 +49,10 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         legendary
     };
 
+    [Header("Shop")]
+    public string shopDescription;
+    public int buyPrice;
+
     [Header("Name")]
     public string itemName;
 
@@ -107,7 +111,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         inventory = FindObjectOfType<Inventory>();
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
 
-        inventory.RegistarItem(this); // unregistar item when it's sold
+        inventory.RegistarItem(this, true); // unregistar item when it's sold
 
         bInitalized = true;
 
@@ -293,6 +297,8 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
             RemoveItem();
         }
 
+        FindObjectOfType<ShopManager>().ItemDrag(this, true);
+
         // --- //
         Vector2 mousePos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(inventory.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out mousePos);
@@ -307,6 +313,8 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        FindObjectOfType<ShopManager>().ItemDrag(this, false);
+
         inInventory = false;
         onDropItem?.Invoke(this);
         onItemAdjusted?.Invoke(this, inInventory);

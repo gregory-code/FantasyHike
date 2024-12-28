@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a662f3477692749419b6a3570795116c, type: 3}
   m_Name: MainSave
   m_EditorClassIdentifier: 
+  sizeX: 3
+  sizeY: 3
+  money: 0
+  itemNames: []
+  itemGridPos: []
