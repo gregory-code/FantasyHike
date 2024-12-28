@@ -23,6 +23,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     private bool inInventory;
     private Vector2 gridPos;
     private int blankNum;
+    private bool bInitalized;
 
     [Header("Item")]
 
@@ -68,7 +69,19 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     public delegate void OnUseItem(item usingItem, character usingCharacter, character recivingCharacter);
     public event OnUseItem onUseItem;
 
-    private void Start()
+    public void Start()
+    {
+        StartCoroutine(DelayedStart());
+    }
+
+    private IEnumerator DelayedStart()
+    {
+        yield return new WaitForSeconds(0.2f);
+        if (bInitalized == false)
+            Init(new Vector2(0, 0));
+    }
+
+    public void Init(Vector2 spawnPos)
     {
         itemRectTransform = GetComponent<RectTransform>();
         iconRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
@@ -84,6 +97,10 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
 
         inventory.RegistarItem(this); // unregistar item when it's sold
+
+        bInitalized = true;
+
+        SetPos(spawnPos);
     }
 
     public void UseItem(item usingItem, character usingCharacter, character recivingCharacter)
@@ -213,6 +230,16 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
     public void SetGridPos(Vector2 newGridPos)
     {
+        SaveManager saveManager = FindObjectOfType<SaveManager>();
+        for (int i = 0; i < saveManager.saveData.itemGridPos.Count; i++)
+        {
+            if (saveManager.saveData.itemNames[i] == itemName)
+            {
+                saveManager.saveData.itemGridPos[i] = newGridPos;
+                break;
+            }
+        }
+        saveManager.Save();
         gridPos = newGridPos;
     }
 

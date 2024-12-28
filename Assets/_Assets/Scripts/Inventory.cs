@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,15 +10,23 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour, IDragHandler
 {
     private Canvas canvas;
+
+    private SaveManager saveManager;
     
     [SerializeField] slot slotPrefab;
     [SerializeField] DragIndicator dragPrefab;
 
     [SerializeField] RectTransform inventoryRectTransform;
     [SerializeField] RectTransform headerRectTransform;
+    [SerializeField] Image moneyIcon;
+    [SerializeField] TextMeshProUGUI moneyText;
 
     [SerializeField] int x = 2;
     [SerializeField] int y = 2;
+
+    [SerializeField] private List<item> ItemLibrary = new List<item>();
+
+    private int money = 0;
 
     [Header("Public, do not touch")]
     
@@ -29,27 +38,62 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     private void Start()
     {
+        saveManager = GameObject.FindObjectOfType<SaveManager>();
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
 
         drag = Instantiate(dragPrefab, transform);
         drag.Init(this, canvas);
-        Resize(x, y);
+
+        InitSaveData();
     }
+
+    private void InitSaveData()
+    {
+        int newSizeX = saveManager.saveData.sizeX;
+        int newSizeY = saveManager.saveData.sizeY;
+        x = newSizeX;
+        y = newSizeY;
+        Resize(newSizeX, newSizeY, false);
+
+        for(int x = 0; x < saveManager.saveData.itemNames.Count; x++)
+        {
+            for(int i = 0; i < ItemLibrary.Count; i++)
+            {
+                if (ItemLibrary[i].itemName == saveManager.saveData.itemNames[x])
+                {
+                    item newItem = Instantiate(ItemLibrary[i], this.transform);
+                    items.Add(newItem);
+                    newItem.Init(GetSlotFromGridPos(saveManager.saveData.itemGridPos[x]).transform.localPosition); // slot local position
+                }
+            }
+        }    
+    }
+
 
     public void ReloadScene()
     {
         SceneManager.LoadScene(0);
     }
 
+    public void SetMoney(int newMoney)
+    {
+        moneyText.text = "" + newMoney;
+    }
+
+    public int GetMoney()
+    {
+        return money;
+    }
+
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            Resize(x, y);
+            Resize(x, y, true);
         }
     }
 
-    private void Resize(int x, int y)
+    private void Resize(int x, int y, bool save)
     {
         inventoryRectTransform.sizeDelta = new Vector2(x * 100, y * 100);
         headerRectTransform.sizeDelta = new Vector2(x * 100, 40);
@@ -86,6 +130,15 @@ public class Inventory : MonoBehaviour, IDragHandler
                 item.SetPos(itemsSlot.transform.localPosition);
             }
         }
+
+        if(save)
+        {
+            saveManager.saveData.sizeX = x;
+            saveManager.saveData.sizeY = y;
+            saveManager.Save();
+        }
+        moneyIcon.transform.localPosition = new Vector2(-43.33f * x, 0);
+        moneyText.transform.localPosition = new Vector2(-28.33f * x, 0);
     }
 
     public void RegistarItem(item item)
@@ -101,11 +154,16 @@ public class Inventory : MonoBehaviour, IDragHandler
         if(added)
         {
             items.Add(item);
+            saveManager.saveData.itemNames.Add(item.itemName);
+            saveManager.saveData.itemGridPos.Add(item.GetGridPos());
         }
         else
         {
             items.Remove(item);
+            saveManager.saveData.itemNames.Remove(item.itemName);
+            saveManager.saveData.itemGridPos.Remove(item.GetGridPos());
         }
+        saveManager.Save();
     }
 
     public List<item> GetItemType(item.itemType type)
@@ -207,5 +265,21 @@ public class Inventory : MonoBehaviour, IDragHandler
     void IDragHandler.OnDrag(PointerEventData eventData)
     {
         inventoryRectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+
+        RectTransform canvasRectTransform = canvas.GetComponent<RectTransform>();
+        Vector2 canvasSize = canvasRectTransform.sizeDelta;
+
+        // Calculate the minimum and maximum anchored positions
+        float minX = (-canvasSize.x / 2) + (50 * x); // Left edge of the canvas
+        float maxX = (canvasSize.x / 2) - (50 * x); // Right edge of the canvas
+        float minY = (-canvasSize.y / 2) - (50 * y); // Bottom edge of the canvas
+        float maxY = (canvasSize.y / 2) - (50 * y); // Top edge of the canvas
+
+        // Clamp the anchored position
+        Vector2 clampedPosition = inventoryRectTransform.anchoredPosition;
+        clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
+        clampedPosition.y = Mathf.Clamp(clampedPosition.y, minY, maxY);
+
+        inventoryRectTransform.anchoredPosition = clampedPosition;
     }
 }

@@ -31,6 +31,7 @@ public class character : MonoBehaviour, IPointerClickHandler
     [Header("Stats")]
     public int currentHealth;
     public int maxHealth;
+
     public int baseStrength;
     public int baseMagic;
 
