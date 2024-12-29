@@ -15,8 +15,7 @@ public class Enemy : character, IPointerClickHandler
 
     [SerializeField] Animator attackIndicatorAnim;
 
-    [SerializeField] item itemPrefab;
-    [SerializeField] item itemDrops;
+    [SerializeField] item[] itemDropPool;
 
     [SerializeField] float yUIadjustment;
 
@@ -62,9 +61,14 @@ public class Enemy : character, IPointerClickHandler
     {
         yield return new WaitForSeconds(0.4f);
 
-        //item droppedItem = Instantiate(itemPrefab, FindObjectOfType<Inventory>().transform);
-        //droppedItem.transform.localPosition = transform.position;
-        //droppedItem.myEffect = itemDrops;
+        Canvas canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
+        Camera camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
+        item droppedItem = Instantiate(itemDropPool[0], canvas.transform);
+        Vector3 screenPosition = camera.WorldToScreenPoint(transform.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, screenPosition, camera, out Vector2 localPosition);
+        droppedItem.transform.localPosition = localPosition;
+        droppedItem.transform.SetParent(FindObjectOfType<Inventory>().transform);
     }
 
     public void SetAttackIndicator(bool state)

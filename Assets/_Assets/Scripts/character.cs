@@ -142,7 +142,7 @@ public class character : MonoBehaviour, IPointerClickHandler
 
     public void TakeDamage(int damage)
     {
-        damage -= baseDefense;
+        damage += baseDefense;
 
         if (damage <= -1)
         {
@@ -152,6 +152,10 @@ public class character : MonoBehaviour, IPointerClickHandler
 
             StartCoroutine(DamageFlash());
             PlayAnim("hurt");
+        }
+        else
+        {
+            SpawnPopup(damagePopup, 0);
         }
     }
 

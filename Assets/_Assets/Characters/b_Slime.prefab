@@ -62,13 +62,13 @@ MonoBehaviour:
   maxHealth: 6
   baseStrength: 0
   baseMagic: 0
+  baseDefense: 0
   isPlayer: 0
   enemyUIPrefab: {fileID: 5753015850022186099, guid: b6ae08907e12f0c4e9653c8e3fa327cf,
     type: 3}
   attackIndicatorAnim: {fileID: 8690718320294089129}
-  itemPrefab: {fileID: 6597131847903776191, guid: 35a02b9f3e9c27441807af740ac74eee,
-    type: 3}
-  itemDrops: {fileID: 11400000, guid: 5d34d422705bf3d469fc7674d2fe0c56, type: 2}
+  itemDropPool:
+  - {fileID: 9042501967038453276, guid: 3236f652435bf63429bdfb141875a805, type: 3}
   yUIadjustment: 0.6
 --- !u!1 &1471349927532780335
 GameObject:

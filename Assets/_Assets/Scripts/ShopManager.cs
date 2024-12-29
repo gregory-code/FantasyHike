@@ -63,12 +63,12 @@ public class ShopManager : MonoBehaviour
         switch (saveManager.saveData.level)
         {
             case 0:
-                GiveSelection(true, commonItems);
-                AllowSelling(true);
+                //GiveSelection(true, commonItems);
+                //AllowSelling(true);
                 break;
 
             default:
-                AllowSelling(false);
+                //AllowSelling(false);
                 break;
         }
     }

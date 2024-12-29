@@ -32,6 +32,7 @@ public class BattleManager : MonoBehaviour
         switch(saveManager.saveData.level)
         {
             case 0:
+                StartCoroutine(SetupFight());
                 break;
 
             default:

@@ -66,7 +66,6 @@ public class Inventory : MonoBehaviour, IDragHandler
                     newItem.Init(placingSlot.transform.localPosition, saveManager.GetIDRotation(x)); // slot local position
                     newItem.SetGridPos(saveManager.GetIDGridPos(x));
                     newItem.ForceAdjustment(true);
-                    items.Add(newItem);
                     bool success = placingSlot.TryPlaceItem(newItem);
                 }
             }
