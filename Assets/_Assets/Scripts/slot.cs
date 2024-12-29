@@ -66,8 +66,10 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         List<slot> possibleSlots = owner.GetPossibleSlots(item, gridPos);
 
-        if (owner.ValidSlotPlacement(possibleSlots) == false || possibleSlots[0].badgroup)
+
+        if (owner.ValidSlotPlacement(possibleSlots) == false || owner.GetBadGroup())
         {
+            item.SetInInventory(false);
             item.ResetPos();
             return false;
         }
@@ -119,7 +121,7 @@ public class slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 highlightedSlots.Add(slot);
 
-                if (checkSlots[0].badgroup)
+                if (owner.GetBadGroup())
                 {
                     slot.Highlight(false);
                     continue;

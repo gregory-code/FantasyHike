@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a662f3477692749419b6a3570795116c, type: 3}
-  m_Name: MainSave
+  m_Script: {fileID: 11500000, guid: d9eef418c14bda5428e9033bf6305374, type: 3}
+  m_Name: Pickaxe_Up
   m_EditorClassIdentifier: 
-  sizeX: 4
-  sizeY: 4
-  money: 0
-  itemIDs:
-  - Dagger/1_0/0
-  - Health Potion/0_0/0
-  level: 0
+  blanks:
+  - {x: 1, y: 1}
+  - {x: 2, y: 1}
+  - {x: 3, y: 2}
+  - {x: 3, y: 3}
+  - {x: 2, y: 3}

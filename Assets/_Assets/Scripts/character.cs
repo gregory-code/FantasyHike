@@ -34,6 +34,7 @@ public class character : MonoBehaviour, IPointerClickHandler
 
     public int baseStrength;
     public int baseMagic;
+    public int baseDefense;
 
     public bool isPlayer;
 
@@ -141,6 +142,8 @@ public class character : MonoBehaviour, IPointerClickHandler
 
     public void TakeDamage(int damage)
     {
+        damage -= baseDefense;
+
         if (damage <= -1)
         {
             onHealthChanged?.Invoke(damage);

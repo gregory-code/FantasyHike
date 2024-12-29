@@ -39,7 +39,7 @@ public class ShopItem : MonoBehaviour
 
     public void Start()
     {
-        Init(testItem);
+        //Init(testItem, true);
     }
 
     public void TryBuy()
@@ -48,7 +48,7 @@ public class ShopItem : MonoBehaviour
         if(myItem.buyPrice <= playerInventory.GetMoney())
         {
             item spawnItem = Instantiate(myItem, this.transform);
-            spawnItem.Init(transform.localPosition);
+            spawnItem.Init(Vector2.zero, 0);
             spawnItem.transform.SetParent(playerInventory.transform);
 
             playerInventory.SetMoney(playerInventory.GetMoney() - myItem.buyPrice);
@@ -56,8 +56,11 @@ public class ShopItem : MonoBehaviour
         }
     }
 
-    public void Init(item itemInit)
+    public void Init(item itemInit, bool freeItem)
     {
+        if(freeItem)
+            itemInit.buyPrice = 0;
+
         myItem = itemInit;
         itemIcon.sprite = itemInit.itemIcon;
         itemNameText.text = itemInit.itemName;
@@ -103,9 +106,9 @@ public class ShopItem : MonoBehaviour
         float dimensionY = (itemSize.y - 1);
 
         List<Vector2> blanks = new List<Vector2>();
-        for (int i = 0; i < item.GetSizeBlanks().Count; i++)
+        for (int i = 0; i < item.GetBlanks(0).Count; i++)
         {
-            Vector2 newBlank = new Vector2(item.GetSizeBlanks()[i].x - 1, item.GetSizeBlanks()[i].y - 1);
+            Vector2 newBlank = new Vector2(item.GetBlanks(0)[i].x - 1, item.GetBlanks(0)[i].y - 1);
             blanks.Add(newBlank);
         }
 

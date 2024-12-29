@@ -11,8 +11,9 @@ public class SaveData : ScriptableObject
 
     public int money = 0;
 
-    public List<string> itemNames = new List<string>();
-    public List<Vector2> itemGridPos = new List<Vector2>();
+    public List<string> itemIDs = new List<string>();
+
+    public int level = 0;
 
     public void ClearSaveData() // currently not being used
     {
@@ -21,7 +22,8 @@ public class SaveData : ScriptableObject
 
         money = 0;
 
-        itemNames = new List<string>();
-        itemGridPos = new List<Vector2>();
+        itemIDs = new List<string>();
+
+        level = 0;
     }
 }

@@ -8,25 +8,101 @@ public class ShopManager : MonoBehaviour
 {
     [SerializeField] Image sellItemImage;
     [SerializeField] TextMeshProUGUI sellItemPrice;
+    [SerializeField] ShopItem shopItemTemplate;
 
     [SerializeField] ParticleSystem moneyPoofVFX;
 
     private SaveManager saveManager;
+    private Inventory playerInventory;
 
     [SerializeField] SellMenu sellMenu;
     [SerializeField] Vector3 nonAvaiableSellMenu;
     [SerializeField] Vector3 avaiableSellMenu;
     [SerializeField] Vector3 shownSellMenu;
 
+    private List<item> commonItems = new List<item>();
+    private List<item> uncommonItems = new List<item>();
+    private List<item> rareItems = new List<item>();
+    private List<item> epicItems = new List<item>();
+    private List<item> legendaryItems = new List<item>();
+
     bool sellAvailable;
     bool showSell;
 
     public void Start()
     {
-        sellAvailable = true;
-
         saveManager = FindObjectOfType<SaveManager>();
+        playerInventory = FindObjectOfType<Inventory>();
 
+        foreach(item foundItem in playerInventory.GetItemLibrary())
+        {
+            switch(foundItem.myRariety)
+            {
+                case item.itemRariety.common:
+                    commonItems.Add(foundItem);
+                    break;
+
+                case item.itemRariety.uncommon:
+                    uncommonItems.Add(foundItem);
+                    break;
+
+                case item.itemRariety.rare:
+                    rareItems.Add(foundItem);
+                    break;
+
+                case item.itemRariety.epic:
+                    epicItems.Add(foundItem);
+                    break;
+
+                case item.itemRariety.legendary:
+                    legendaryItems.Add(foundItem);
+                    break;
+            }
+        }
+
+        switch (saveManager.saveData.level)
+        {
+            case 0:
+                GiveSelection(true, commonItems);
+                AllowSelling(true);
+                break;
+
+            default:
+                AllowSelling(false);
+                break;
+        }
+    }
+
+    private void GiveSelection(bool freeItems, List<item> itemGroup)
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            bool uniqueOption = false;
+            item newItem = null;
+            do
+            {
+                int randomItem = Random.Range(0, itemGroup.Count);
+                newItem = itemGroup[randomItem];
+                for(int x = 0; x < saveManager.saveData.itemIDs.Count; x++)
+                {
+                    if (newItem.itemName != saveManager.GetIDName(x))
+                    {
+                        //uniqueOption = true;
+                    }
+                }
+            }
+            while (uniqueOption == true);
+
+            Transform mainCanvasv = GameObject.FindWithTag("MainCanvas").transform;
+            ShopItem newShopItem = Instantiate(shopItemTemplate, mainCanvasv);
+            newShopItem.transform.localPosition = new Vector3((i * 300) - 300, 100, 0);
+            newShopItem.Init(newItem, freeItems);
+        }
+    }
+
+    private void AllowSelling(bool state)
+    {
+        sellAvailable = state;
         StopAllCoroutines();
         StartCoroutine(MoveSellMenu());
     }
@@ -52,13 +128,14 @@ public class ShopManager : MonoBehaviour
             //sell it here
             playerInventory.RegistarItem(itemDragging, false);
             itemDragging.RemoveItem();
-            saveManager.saveData.itemNames.Remove(itemDragging.itemName);
-            saveManager.saveData.itemGridPos.Remove(itemDragging.GetGridPos());
+            saveManager.saveData.itemIDs.Remove($"{itemDragging.itemName}/{itemDragging.GetGridPos().x}_{itemDragging.GetGridPos().y}");
             Destroy(itemDragging.gameObject);
 
-            ParticleSystem moneyBurst = Instantiate(moneyPoofVFX, new Vector3(3f,1.5f,0), moneyPoofVFX.transform.rotation);
+            ParticleSystem moneyBurst = Instantiate(moneyPoofVFX, new Vector3(2.4f,1.3f,4), moneyPoofVFX.transform.rotation);
             ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[moneyBurst.emission.burstCount];
             bursts[0].count = itemValue;
+            moneyBurst.emission.SetBurst(0, bursts[0]);
+            moneyBurst.Play();
 
             playerInventory.SetMoney(playerInventory.GetMoney() + itemValue);
         }

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &598218403490877682
+--- !u!1 &3666127388672875425
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6200582405966051925}
-  - component: {fileID: 9144685843540842301}
-  - component: {fileID: 5138755716242172853}
+  - component: {fileID: 4212104245446012164}
+  - component: {fileID: 3275751867865393323}
+  - component: {fileID: 4732898710280615473}
   m_Layer: 5
   m_Name: icon
   m_TagString: Untagged
@@ -18,40 +18,40 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &6200582405966051925
+--- !u!224 &4212104245446012164
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 598218403490877682}
+  m_GameObject: {fileID: 3666127388672875425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5803867070627605885}
+  m_Father: {fileID: 8950524428793257863}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 90, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9144685843540842301
+--- !u!222 &3275751867865393323
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 598218403490877682}
+  m_GameObject: {fileID: 3666127388672875425}
   m_CullTransparentMesh: 1
---- !u!114 &5138755716242172853
+--- !u!114 &4732898710280615473
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 598218403490877682}
+  m_GameObject: {fileID: 3666127388672875425}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -75,7 +75,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &6412672646942744024
+--- !u!1 &8590688133012809372
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,53 +83,53 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5803867070627605885}
-  - component: {fileID: 1662849738546131489}
-  - component: {fileID: 7473235770392374872}
-  - component: {fileID: 1043409196981985356}
-  - component: {fileID: 1015211928497256042}
+  - component: {fileID: 8950524428793257863}
+  - component: {fileID: 9091163856090797187}
+  - component: {fileID: 7233464158041446399}
+  - component: {fileID: 8068307019533418124}
+  - component: {fileID: 8749248228880795989}
   m_Layer: 5
-  m_Name: HealthPotion
+  m_Name: Dagger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &5803867070627605885
+--- !u!224 &8950524428793257863
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6412672646942744024}
+  m_GameObject: {fileID: 8590688133012809372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6200582405966051925}
+  - {fileID: 4212104245446012164}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -254.3, y: -84.1}
+  m_AnchoredPosition: {x: -254.3, y: 335.9}
   m_SizeDelta: {x: 90, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1662849738546131489
+--- !u!222 &9091163856090797187
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6412672646942744024}
+  m_GameObject: {fileID: 8590688133012809372}
   m_CullTransparentMesh: 1
---- !u!114 &7473235770392374872
+--- !u!114 &7233464158041446399
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6412672646942744024}
+  m_GameObject: {fileID: 8590688133012809372}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -153,44 +153,42 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1043409196981985356
+--- !u!114 &8068307019533418124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6412672646942744024}
+  m_GameObject: {fileID: 8590688133012809372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bedcd1511987544282b4f2cad0e9fe2, type: 3}
+  m_Script: {fileID: 11500000, guid: 86b8414cc5d66f64d882833a70d8f100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemSize: {x: 1, y: 1}
+  itemSize: {x: 1, y: 2}
   blankMaps: []
-  myType: 0
+  myType: 2
   myRariety: 0
-  shopDescription: One time consumable heal during battle
-  buyPrice: 6
-  itemName: Health Potion
-  itemIcon: {fileID: 21300000, guid: c138bc7094e1c0b4e962c675b55b2b24, type: 3}
+  shopDescription: Increases your strength by a very little
+  buyPrice: 0
+  itemName: Dagger
+  itemIcon: {fileID: 21300000, guid: d65bfd29c4623174b8b7f636c9bb1b9c, type: 3}
   manaCost: 0
   spellName: 
   spellIcon: {fileID: 0}
   spellProjectile: {fileID: 0}
-  particle: {fileID: 4569046032541823318, guid: 6802119316d751c49a17fe9aaefaa3ba,
-    type: 3}
-  baseValue: 5
-  itemDescription: {fileID: -393533310392563367, guid: a4ba1f24df9d292449e72c0dab43aa86,
-    type: 3}
+  particle: {fileID: 0}
+  baseValue: 2
+  itemDescription: {fileID: 0}
   targetsEnemies: 0
-  targetsSelf: 1
---- !u!114 &1015211928497256042
+  targetsSelf: 0
+--- !u!114 &8749248228880795989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6412672646942744024}
+  m_GameObject: {fileID: 8590688133012809372}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -224,11 +222,11 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 7473235770392374872}
+  m_TargetGraphic: {fileID: 7233464158041446399}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1043409196981985356}
+      - m_Target: {fileID: 8068307019533418124}
         m_TargetAssemblyTypeName: item, Assembly-CSharp
         m_MethodName: ItemPressed
         m_Mode: 1

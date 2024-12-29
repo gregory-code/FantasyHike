@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5484850327305980856}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sellItemImage: {fileID: 0}
   sellItemPrice: {fileID: 0}
+  shopItemTemplate: {fileID: 5414892952850494150, guid: 6513d91b03f6f5f489311fcb49945a88,
+    type: 3}
   moneyPoofVFX: {fileID: 19806904, guid: bb5363fd4b4517e4fafbcdbff8bbf0ab, type: 3}
   sellMenu: {fileID: 0}
   nonAvaiableSellMenu: {x: 490, y: 510, z: 0}

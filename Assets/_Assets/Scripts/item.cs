@@ -93,10 +93,10 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     {
         yield return new WaitForSeconds(0.2f);
         if (bInitalized == false)
-            Init(new Vector2(0, 0));
+            Init(new Vector2(0, 0), 0);
     }
 
-    public void Init(Vector2 spawnPos)
+    public void Init(Vector2 spawnPos, int rotationTimes)
     {
         itemRectTransform = GetComponent<RectTransform>();
         iconRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
@@ -115,6 +115,11 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
         bInitalized = true;
 
+        for(int i = 0; i < rotationTimes; i++)
+        {
+            TryRotateItem(true);
+        }
+
         SetPos(spawnPos);
     }
 
@@ -123,7 +128,12 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         onUseItem?.Invoke(usingItem, usingCharacter, recivingCharacter);
     }
 
-    private List<Vector2> GetBlanks(int ID)
+    public int GetBlankNum()
+    {
+        return blankNum;
+    }
+
+    public List<Vector2> GetBlanks(int ID)
     {
         List<Vector2> newBlanks = new List<Vector2>();
         if(blankMaps.Length <= 2)
@@ -134,6 +144,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         for(int i = 0; i < blankMaps[ID].blanks.Length; i ++)
         {
             Vector2 newblank = new Vector2(blankMaps[ID].blanks[i].x, blankMaps[ID].blanks[i].y);
+            Debug.Log(blankMaps[ID].name);
             newBlanks.Add(newblank);
         }
         return newBlanks;
@@ -150,11 +161,15 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         if(wasFlipped)
         {
             wasFlipped = false;
-            TryRotateItem(true);
+            RollOverBlanks();
+            RollOverBlanks();
+            transform.Rotate(new Vector3(0, 0, -180));
+            TryRotateItem(false);
         }
 
         if(wasInInventory)
         {
+            inInventory = true;
             List<slot> possibleSlots = inventory.GetPossibleSlots(this, gridPos);
 
             foreach (slot slot in possibleSlots)
@@ -164,6 +179,32 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         }
 
         transform.localPosition = previousPos;
+    }
+
+    public void RemoveItem()
+    {
+        if (!inInventory)
+            return;
+
+        List<slot> possibleSlots = inventory.GetPossibleSlots(this, gridPos);
+
+        foreach (slot slot in possibleSlots)
+        {
+            if (slot.myItem == this)
+            {
+                slot.myItem = null;
+            }
+        }
+    }
+
+
+    private void RollOverBlanks()
+    {
+        blankNum++;
+        if (blankNum >= 4)
+        {
+            blankNum = 0;
+        }
     }
 
     public void TryRotateItem(bool forceRotate)
@@ -176,11 +217,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         itemSize.x = itemSize.y;
         itemSize.y = oldX;
 
-        blankNum++;
-        if(blankNum >= 4)
-        {
-            blankNum = 0;
-        }
+        RollOverBlanks();
         sizeBlanks = GetBlanks(blankNum);
 
         if (forceRotate)
@@ -212,22 +249,6 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         inventory.itemDragging = state;
     }
 
-    public void RemoveItem()
-    {
-        if (!inInventory)
-            return;
-
-        List<slot> possibleSlots = inventory.GetPossibleSlots(this, gridPos);
-
-        foreach (slot slot in possibleSlots)
-        {
-            if (slot.myItem == this)
-            {
-                slot.myItem = null;
-            }
-        }
-    }
-
     public bool InInventory()
     {
         return inInventory;
@@ -246,11 +267,11 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     public void SetGridPos(Vector2 newGridPos)
     {
         SaveManager saveManager = FindObjectOfType<SaveManager>();
-        for (int i = 0; i < saveManager.saveData.itemGridPos.Count; i++)
+        for (int i = 0; i < saveManager.saveData.itemIDs.Count; i++)
         {
-            if (saveManager.saveData.itemNames[i] == itemName)
+            if (saveManager.GetIDName(i) == itemName)
             {
-                saveManager.saveData.itemGridPos[i] = newGridPos;
+                saveManager.saveData.itemIDs[i] = $"{itemName}/{newGridPos.x}_{newGridPos.y}/{blankNum}";
                 break;
             }
         }
@@ -304,6 +325,10 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         RectTransformUtility.ScreenPointToLocalPointInRectangle(inventory.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out mousePos);
         itemRectTransform.anchoredPosition = mousePos;
         itemRectTransform.anchoredPosition += new Vector2(-45 * (itemSize.x - 1) - 40, 45 * (itemSize.y - 1) + 40);
+        if(itemSize.x >= 3 && itemSize.y >= 3)
+        {
+            itemRectTransform.anchoredPosition -= new Vector2(-15 * (itemSize.x - 1) - 40, 15 * (itemSize.y - 1) + 40);
+        }
         inventory.drag.BeginDrag(itemSize);
         // --- //
 
@@ -320,5 +345,10 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
         onItemAdjusted?.Invoke(this, inInventory);
         ItemInteract(false);
         inventory.drag.EndDrag();
+    }
+
+    public void ForceAdjustment(bool state)
+    {
+        onItemAdjusted?.Invoke(this, state);
     }
 }

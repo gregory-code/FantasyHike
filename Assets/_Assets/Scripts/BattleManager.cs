@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] Enemy slime;
 
+    private SaveManager saveManager;
 
     private Player player;
 
@@ -22,11 +23,20 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(SetUpRandomTransition());
-
+        saveManager = FindObjectOfType<SaveManager>();
         player = FindObjectOfType<Player>();
         player.onEndTurn += CharacterEndedTurn;
-        StartCoroutine(SetupFight());
+
+        StartCoroutine(SetUpRandomTransition());
+
+        switch(saveManager.saveData.level)
+        {
+            case 0:
+                break;
+
+            default:
+                break;
+        }
     }
 
     private IEnumerator SetUpRandomTransition()

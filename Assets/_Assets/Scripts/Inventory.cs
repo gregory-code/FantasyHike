@@ -55,22 +55,28 @@ public class Inventory : MonoBehaviour, IDragHandler
         y = newSizeY;
         Resize(newSizeX, newSizeY, false);
 
-        for(int x = 0; x < saveManager.saveData.itemNames.Count; x++)
+        for(int x = 0; x < saveManager.saveData.itemIDs.Count; x++)
         {
             for(int i = 0; i < ItemLibrary.Count; i++)
             {
-                if (ItemLibrary[i].itemName == saveManager.saveData.itemNames[x])
+                if (ItemLibrary[i].itemName == saveManager.GetIDName(x))
                 {
                     item newItem = Instantiate(ItemLibrary[i], this.transform);
-                    slot placingSlot = GetSlotFromGridPos(saveManager.saveData.itemGridPos[x]);
+                    slot placingSlot = GetSlotFromGridPos(saveManager.GetIDGridPos(x));
+                    newItem.Init(placingSlot.transform.localPosition, saveManager.GetIDRotation(x)); // slot local position
+                    newItem.SetGridPos(saveManager.GetIDGridPos(x));
+                    newItem.ForceAdjustment(true);
                     items.Add(newItem);
-                    newItem.Init(placingSlot.transform.localPosition); // slot local position
-                    placingSlot.TryPlaceItem(newItem);
+                    bool success = placingSlot.TryPlaceItem(newItem);
                 }
             }
         }    
     }
 
+    public List<item> GetItemLibrary()
+    {
+        return ItemLibrary;
+    }
 
     public void ReloadScene()
     {
@@ -163,15 +169,18 @@ public class Inventory : MonoBehaviour, IDragHandler
         if(added)
         {
             items.Add(item);
-            saveManager.saveData.itemNames.Add(item.itemName);
-            saveManager.saveData.itemGridPos.Add(item.GetGridPos());
+            if (saveManager.saveData.itemIDs.Contains($"{item.itemName}/{item.GetGridPos().x}_{item.GetGridPos().y}/{item.GetBlankNum()}") == false)
+                saveManager.saveData.itemIDs.Add($"{item.itemName}/{item.GetGridPos().x}_{item.GetGridPos().y}/{item.GetBlankNum()}");
+
         }
         else
         {
             items.Remove(item);
-            saveManager.saveData.itemNames.Remove(item.itemName);
-            saveManager.saveData.itemGridPos.Remove(item.GetGridPos());
+            if (saveManager.saveData.itemIDs.Contains($"{item.itemName}/{item.GetGridPos().x}_{item.GetGridPos().y}/{item.GetBlankNum()}"))
+                saveManager.saveData.itemIDs.Remove($"{item.itemName}/{item.GetGridPos().x}_{item.GetGridPos().y}/{item.GetBlankNum()}");
+
         }
+
         saveManager.Save();
     }
 
@@ -192,6 +201,8 @@ public class Inventory : MonoBehaviour, IDragHandler
     {
         Vector2 itemSize = item.itemSize;
         List<slot> possibleSlots = new List<slot>();
+
+        bool badGroup = false;
 
         float dimensionX = gridPos.x + (itemSize.x - 1);
         float dimensionY = gridPos.y + (itemSize.y - 1);
@@ -233,13 +244,39 @@ public class Inventory : MonoBehaviour, IDragHandler
                 }
                 else
                 {
-                    if (possibleSlots.Count >= 1)
-                        possibleSlots[0].badgroup = true;
+                    badGroup = true;
                 }
             }
         }
 
+        if(badGroup)
+        {
+            if (possibleSlots.Count >= 1)
+            {
+                SetBadGroup(possibleSlots, true);
+            }
+        }
+
         return possibleSlots;
+    }
+
+    public void SetBadGroup(List<slot> slotsToSet, bool state)
+    {
+        foreach(slot slotToAdjust in slotsToSet)
+        {
+            slotToAdjust.badgroup = state;
+        }
+    }
+
+    public bool GetBadGroup()
+    {
+        bool badGroup = false;
+        foreach(slot slot in slots)
+        {
+            if (slot.badgroup)
+                badGroup = true;
+        }
+        return badGroup;
     }
 
     public bool ValidSlotPlacement(List<slot> possibleSlots)
@@ -273,6 +310,8 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     void IDragHandler.OnDrag(PointerEventData eventData)
     {
+        Vector2 previousPosition = inventoryRectTransform.anchoredPosition;
+
         inventoryRectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
 
         RectTransform canvasRectTransform = canvas.GetComponent<RectTransform>();
@@ -290,5 +329,17 @@ public class Inventory : MonoBehaviour, IDragHandler
         clampedPosition.y = Mathf.Clamp(clampedPosition.y, minY, maxY);
 
         inventoryRectTransform.anchoredPosition = clampedPosition;
+
+        Vector2 actualDelta = inventoryRectTransform.anchoredPosition - previousPosition;
+
+        item[] allItems = FindObjectsOfType<item>();
+
+        foreach (item movingItem in allItems)
+        {
+            if (movingItem.InInventory() == false)
+            {
+                movingItem.GetComponent<RectTransform>().anchoredPosition -= actualDelta;
+            }
+        }
     }
 }
