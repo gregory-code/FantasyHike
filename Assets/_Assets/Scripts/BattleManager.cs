@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
@@ -15,6 +16,8 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] Enemy slime;
 
+    bool moveToNextScene;
+
     private SaveManager saveManager;
 
     private Player player;
@@ -27,11 +30,15 @@ public class BattleManager : MonoBehaviour
         player = FindObjectOfType<Player>();
         player.onEndTurn += CharacterEndedTurn;
 
-        StartCoroutine(SetUpRandomTransition());
+        moveToNextScene = false;
+
+        FindObjectOfType<OnwardButton>().onOnward += Onward;
+
+        StartCoroutine(SetUpRandomTransition(0, 1));
 
         switch(saveManager.saveData.level)
         {
-            case 0:
+            case 1:
                 StartCoroutine(SetupFight());
                 break;
 
@@ -40,19 +47,62 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private IEnumerator SetUpRandomTransition()
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            saveManager.ResetSaveData();
+            Debug.LogWarning("Reset Data");
+            SceneManager.LoadScene("StartingScene");
+        }
+    }
+
+    private void Onward()
+    {
+        saveManager.saveData.level++;
+        moveToNextScene = true;
+        StartCoroutine(SetUpRandomTransition(1, 0));
+    }
+
+    private IEnumerator SetUpRandomTransition(int defaultValue, int newValue)
     {
         int randomTransition = Random.Range(0, 3);
         screenTransition.material = transitionMaterials[randomTransition];
-        transitionValue = 0;
-        transitionMaterials[randomTransition].SetFloat("_Transition", 0);
+        transitionValue = defaultValue;
+        transitionMaterials[randomTransition].SetFloat("_Transition", defaultValue);
 
-        while(transitionValue < 1)
+        yield return new WaitForSeconds(0.5f);
+
+        if(newValue == 1)
         {
-            yield return new WaitForEndOfFrame();
-            transitionValue += Time.deltaTime;
-            transitionMaterials[randomTransition].SetFloat("_Transition", transitionValue);
+            while (transitionValue < newValue)
+            {
+                yield return new WaitForEndOfFrame();
+                transitionValue += Time.deltaTime;
+                transitionMaterials[randomTransition].SetFloat("_Transition", transitionValue);
+            }
         }
+        else
+        {
+            while (transitionValue > newValue)
+            {
+                yield return new WaitForEndOfFrame();
+                transitionValue -= Time.deltaTime;
+                transitionMaterials[randomTransition].SetFloat("_Transition", transitionValue);
+            }
+        }
+
+        saveManager.Save();
+        yield return new WaitForSeconds(0.2f);
+        if(moveToNextScene)
+        {
+            MoveToNextLevel();
+        }
+    }
+
+    private void MoveToNextLevel()
+    {
+        SceneManager.LoadScene("ForestScene");
     }
 
     private void CharacterEndedTurn(character character)
@@ -97,9 +147,15 @@ public class BattleManager : MonoBehaviour
         enemies.Remove(enemyToRemove);
         if(enemies.Count <= 0)
         {
-            Debug.Log("You beat the wave");
-            //Next game
+            StartCoroutine(EndFight());
         }
+    }
+
+    private IEnumerator EndFight()
+    {
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(FindObjectOfType<OnwardButton>().Show());
+        StartCoroutine(FindObjectOfType<LootPool>().Show());
     }
 
     private IEnumerator SetupFight()

@@ -151,7 +151,7 @@ MonoBehaviour:
   myType: 1
   myRariety: 0
   shopDescription: Learn the magic blast spell, a single target weak magic attack
-  buyPrice: 6
+  buyPrice: 0
   itemName: Magic Scroll
   itemIcon: {fileID: 21300000, guid: 8921df19c375edd4bbe1e0852858ad98, type: 3}
   manaCost: 1

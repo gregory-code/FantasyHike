@@ -15,7 +15,7 @@ public class SaveData : ScriptableObject
 
     public int level = 0;
 
-    public void ClearSaveData() // currently not being used
+    public void ClearSaveData()
     {
         sizeX = 2;
         sizeY = 2;

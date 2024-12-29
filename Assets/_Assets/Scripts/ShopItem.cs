@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class ShopItem : MonoBehaviour
 {
@@ -35,7 +34,10 @@ public class ShopItem : MonoBehaviour
 
     [SerializeField] Image[] fakeSlots;
 
-    public item testItem;
+    //public item testItem;
+
+    public delegate void OnItemPicked(ShopItem shopItem);
+    public event OnItemPicked onItemPicked;
 
     public void Start()
     {
@@ -48,8 +50,10 @@ public class ShopItem : MonoBehaviour
         if(myItem.buyPrice <= playerInventory.GetMoney())
         {
             item spawnItem = Instantiate(myItem, this.transform);
-            spawnItem.Init(Vector2.zero, 0);
+            spawnItem.Init(new Vector3((spawnItem.itemSize.x - 1) * -45, (spawnItem.itemSize.y - 1) * 45, 0), 0);
             spawnItem.transform.SetParent(playerInventory.transform);
+
+            onItemPicked?.Invoke(this);
 
             playerInventory.SetMoney(playerInventory.GetMoney() - myItem.buyPrice);
             Destroy(this.gameObject);

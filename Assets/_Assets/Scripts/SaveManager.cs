@@ -100,7 +100,7 @@ public class SaveManager : MonoBehaviour
     {
         if (saveData != null)
         {
-
+            saveData.ClearSaveData();
             Debug.Log("Save data reset to default values.");
             Save();
         }

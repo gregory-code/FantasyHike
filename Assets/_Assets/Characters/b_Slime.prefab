@@ -59,7 +59,7 @@ MonoBehaviour:
   deathSmoke: {fileID: 119968, guid: 14b3d78875b54a9438ccfdac0b6a6737, type: 3}
   preparedEffect: {fileID: 0}
   currentHealth: 0
-  maxHealth: 6
+  maxHealth: 3
   baseStrength: 0
   baseMagic: 0
   baseDefense: 0
@@ -68,7 +68,12 @@ MonoBehaviour:
     type: 3}
   attackIndicatorAnim: {fileID: 8690718320294089129}
   itemDropPool:
-  - {fileID: 9042501967038453276, guid: 3236f652435bf63429bdfb141875a805, type: 3}
+  - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}
+  - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}
+  - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}
+  - {fileID: 2165570206391184707, guid: c6ba009117aa60b4f9bf7d341eed9f1c, type: 3}
+  - {fileID: 2165570206391184707, guid: c6ba009117aa60b4f9bf7d341eed9f1c, type: 3}
+  - {fileID: 8322538409897077237, guid: 3523fdd6cb39e1e43a413d46a5ff8365, type: 3}
   yUIadjustment: 0.6
 --- !u!1 &1471349927532780335
 GameObject:

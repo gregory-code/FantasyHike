@@ -26,8 +26,12 @@ public class ShopManager : MonoBehaviour
     private List<item> epicItems = new List<item>();
     private List<item> legendaryItems = new List<item>();
 
+    private List<ShopItem> currentShopItems = new List<ShopItem>();
+
     bool sellAvailable;
     bool showSell;
+
+    private bool bChooseOne;
 
     public void Start()
     {
@@ -63,12 +67,13 @@ public class ShopManager : MonoBehaviour
         switch (saveManager.saveData.level)
         {
             case 0:
-                //GiveSelection(true, commonItems);
-                //AllowSelling(true);
+                bChooseOne = true;
+                GiveSelection(true, commonItems);
+                AllowSelling(false);
                 break;
 
             default:
-                //AllowSelling(false);
+                AllowSelling(false);
                 break;
         }
     }
@@ -95,8 +100,25 @@ public class ShopManager : MonoBehaviour
 
             Transform mainCanvasv = GameObject.FindWithTag("MainCanvas").transform;
             ShopItem newShopItem = Instantiate(shopItemTemplate, mainCanvasv);
+            currentShopItems.Add(newShopItem);
+            newShopItem.onItemPicked += itemPicked;
+            newShopItem.transform.SetSiblingIndex(4);
             newShopItem.transform.localPosition = new Vector3((i * 300) - 300, 100, 0);
             newShopItem.Init(newItem, freeItems);
+        }
+    }
+
+    private void itemPicked(ShopItem shopItemClicked)
+    {
+        shopItemClicked.onItemPicked -= itemPicked;
+        if(bChooseOne)
+        {
+            foreach(ShopItem shop in currentShopItems)
+            {
+                Destroy(shop.gameObject);
+            }
+            currentShopItems.Clear();
+            StartCoroutine(FindObjectOfType<OnwardButton>().Show());
         }
     }
 
@@ -124,21 +146,27 @@ public class ShopManager : MonoBehaviour
 
         if(startDrag == false && sellMenu.bHoveringSellMenu)
         {
-            Inventory playerInventory = FindObjectOfType<Inventory>();
-            //sell it here
-            playerInventory.RegistarItem(itemDragging, false);
-            itemDragging.RemoveItem();
-            saveManager.saveData.itemIDs.Remove($"{itemDragging.itemName}/{itemDragging.GetGridPos().x}_{itemDragging.GetGridPos().y}");
-            Destroy(itemDragging.gameObject);
-
-            ParticleSystem moneyBurst = Instantiate(moneyPoofVFX, new Vector3(2.4f,1.3f,4), moneyPoofVFX.transform.rotation);
-            ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[moneyBurst.emission.burstCount];
-            bursts[0].count = itemValue;
-            moneyBurst.emission.SetBurst(0, bursts[0]);
-            moneyBurst.Play();
-
-            playerInventory.SetMoney(playerInventory.GetMoney() + itemValue);
+            SellItem(itemDragging, itemValue);
         }
+    }
+
+    public void SellItem(item itemToSell, int itemValue)
+    {
+        Inventory playerInventory = FindObjectOfType<Inventory>();
+        //sell it here
+        playerInventory.RegistarItem(itemToSell, false);
+        itemToSell.RemoveItem();
+        saveManager.saveData.itemIDs.Remove($"{itemToSell.itemName}/{itemToSell.GetGridPos().x}_{itemToSell.GetGridPos().y}");
+        Destroy(itemToSell.gameObject);
+
+        ParticleSystem moneyBurst = Instantiate(moneyPoofVFX, new Vector3(2.4f, 1.3f, 4), moneyPoofVFX.transform.rotation);
+        ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[moneyBurst.emission.burstCount];
+        bursts[0].count = itemValue;
+        moneyBurst.emission.SetBurst(0, bursts[0]);
+        moneyBurst.Play();
+        Destroy(moneyBurst, 1);
+
+        playerInventory.SetMoney(playerInventory.GetMoney() + itemValue);
     }
 
     private IEnumerator MoveSellMenu()

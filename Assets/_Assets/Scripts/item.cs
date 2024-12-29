@@ -195,6 +195,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
                 slot.myItem = null;
             }
         }
+        inventory.items.Remove(this);
     }
 
 
@@ -275,7 +276,6 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
                 break;
             }
         }
-        saveManager.Save();
         gridPos = newGridPos;
     }
 

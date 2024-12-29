@@ -61,14 +61,17 @@ public class Enemy : character, IPointerClickHandler
     {
         yield return new WaitForSeconds(0.4f);
 
-        Canvas canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
-        Camera camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        if(Random.Range(0, 4) >= 1)
+        {
+            LootPool lootPool = FindObjectOfType<LootPool>();
 
-        item droppedItem = Instantiate(itemDropPool[0], canvas.transform);
-        Vector3 screenPosition = camera.WorldToScreenPoint(transform.position);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, screenPosition, camera, out Vector2 localPosition);
-        droppedItem.transform.localPosition = localPosition;
-        droppedItem.transform.SetParent(FindObjectOfType<Inventory>().transform);
+            int randomItem = Random.Range(0, itemDropPool.Length);
+
+            Transform spawn = lootPool.GetRandomSpawn();
+            item droppedItem = Instantiate(itemDropPool[randomItem], spawn);
+            droppedItem.Init(new Vector3((droppedItem.itemSize.x - 1) * -45, (droppedItem.itemSize.y - 1) * 45, 0), 0);
+            lootPool.RegisterItemToLootPool(droppedItem);
+        }
     }
 
     public void SetAttackIndicator(bool state)

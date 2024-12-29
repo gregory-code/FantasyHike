@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -41,10 +42,26 @@ public class Inventory : MonoBehaviour, IDragHandler
         saveManager = GameObject.FindObjectOfType<SaveManager>();
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").GetComponent<Canvas>();
 
+        FindObjectOfType<OnwardButton>().onOnward += Onward;
+
         drag = Instantiate(dragPrefab, transform);
         drag.Init(this, canvas);
 
         InitSaveData();
+    }
+
+    private void Onward()
+    {
+        item[] allItems = FindObjectsOfType<item>();
+
+        for (int i = 0; i < allItems.Length; i++)
+        {
+            if (allItems[i].InInventory() == false)
+            {
+                int itemValue = Mathf.RoundToInt(allItems[i].buyPrice / 2);
+                FindObjectOfType<ShopManager>().SellItem(allItems[i], itemValue);
+            }
+        }
     }
 
     private void InitSaveData()
@@ -77,11 +94,6 @@ public class Inventory : MonoBehaviour, IDragHandler
         return ItemLibrary;
     }
 
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(0);
-    }
-
     public void SetMoney(int newMoney)
     {
         moneyText.text = "" + newMoney;
@@ -94,10 +106,10 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        /*if(Input.GetKeyDown(KeyCode.Space))
         {
             Resize(x, y, true);
-        }
+        }*/
     }
 
     private void Resize(int x, int y, bool save)
@@ -142,7 +154,6 @@ public class Inventory : MonoBehaviour, IDragHandler
         {
             saveManager.saveData.sizeX = x;
             saveManager.saveData.sizeY = y;
-            saveManager.Save();
         }
         moneyIcon.transform.localPosition = new Vector2(-43.33f * x, 0);
         moneyText.transform.localPosition = new Vector2(-28.33f * x, 0);
@@ -179,8 +190,6 @@ public class Inventory : MonoBehaviour, IDragHandler
                 saveManager.saveData.itemIDs.Remove($"{item.itemName}/{item.GetGridPos().x}_{item.GetGridPos().y}/{item.GetBlankNum()}");
 
         }
-
-        saveManager.Save();
     }
 
     public List<item> GetItemType(item.itemType type)
