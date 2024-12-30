@@ -229,8 +229,11 @@ MonoBehaviour:
   maxHealth: 10
   baseStrength: 0
   baseMagic: 0
+  baseDefense: 0
   isPlayer: 1
   maxMana: 3
+  manaPopup: {fileID: 2048790595128772915, guid: dc7ed11e352c059478780a827d436194,
+    type: 3}
   playerUIPrefab: {fileID: 4044543933825084923, guid: 56ec6178ab8a0804e9af600e51705e6d,
     type: 3}
   actionButtonsPrefab: {fileID: 8604786206039799484, guid: e4e49d36d8896cf4b888f59d12df0e9e,

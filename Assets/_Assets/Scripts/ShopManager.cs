@@ -40,6 +40,9 @@ public class ShopManager : MonoBehaviour
 
         foreach(item foundItem in playerInventory.GetItemLibrary())
         {
+            if (foundItem.bMonsterDrop)
+                continue;
+
             switch(foundItem.myRariety)
             {
                 case item.itemRariety.common:
@@ -88,15 +91,20 @@ public class ShopManager : MonoBehaviour
             {
                 int randomItem = Random.Range(0, itemGroup.Count);
                 newItem = itemGroup[randomItem];
+                uniqueOption = true;
                 for(int x = 0; x < saveManager.saveData.itemIDs.Count; x++)
                 {
-                    if (newItem.itemName != saveManager.GetIDName(x))
+                    if (newItem.itemName == saveManager.GetIDName(x))
                     {
-                        //uniqueOption = true;
+                        uniqueOption = false;
                     }
                 }
+                if(uniqueOption == true)
+                {
+                    itemGroup.Remove(newItem);
+                }
             }
-            while (uniqueOption == true);
+            while (uniqueOption == false);
 
             Transform mainCanvasv = GameObject.FindWithTag("MainCanvas").transform;
             ShopItem newShopItem = Instantiate(shopItemTemplate, mainCanvasv);

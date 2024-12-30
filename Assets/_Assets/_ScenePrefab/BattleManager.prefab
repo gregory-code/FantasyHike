@@ -50,5 +50,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: d4bae35bcd3a0134e86812adec7912cd, type: 2}
   - {fileID: 2100000, guid: e4e2b99e35ec19c468a33ac1b37df4ab, type: 2}
   playerPos: {fileID: 0}
-  enemyPos: {fileID: 0}
-  slime: {fileID: 4738868632277899652, guid: 74bff513607627f44b462a24aadd0a8c, type: 3}
+  enemyLibrary:
+  - {fileID: -9173020443392406145, guid: 74bff513607627f44b462a24aadd0a8c, type: 3}
+  - {fileID: 4491763660656128010, guid: e4592990459f6e644901a1da3b17f1ff, type: 3}

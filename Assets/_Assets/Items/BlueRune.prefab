@@ -225,6 +225,7 @@ MonoBehaviour:
   blankMaps: []
   myType: 1
   myRariety: 1
+  bMonsterDrop: 1
   shopDescription: The crystalized rock of slime, imbued with magic...
   buyPrice: 8
   itemName: Blue Rune
@@ -235,8 +236,8 @@ MonoBehaviour:
   spellProjectile: {fileID: -4777462821892446248, guid: c6b70b697f78c5542a0a19a17cf3f82a,
     type: 3}
   particle: {fileID: 172042, guid: 3a4f39a499c158847a5aadbcd1a70305, type: 3}
-  baseValue: 1
-  itemDescription: {fileID: -393533310392563367, guid: 0af7cfc1c7419814ca175ad413bead43,
+  baseValue: 4
+  itemDescription: {fileID: -393533310392563367, guid: 6a8cdcd5236041b489a42d6976172164,
     type: 3}
   targetsEnemies: 1
   targetsSelf: 0

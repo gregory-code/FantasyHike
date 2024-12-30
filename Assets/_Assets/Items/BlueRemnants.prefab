@@ -225,6 +225,7 @@ MonoBehaviour:
   blankMaps: []
   myType: 2
   myRariety: 0
+  bMonsterDrop: 1
   shopDescription: It's the leftover bits of a blue slime... Weird
   buyPrice: 0
   itemName: Blue Remnants
@@ -234,7 +235,7 @@ MonoBehaviour:
   spellIcon: {fileID: 0}
   spellProjectile: {fileID: 0}
   particle: {fileID: 0}
-  baseValue: 0
+  baseValue: 1
   itemDescription: {fileID: 0}
   targetsEnemies: 0
   targetsSelf: 0

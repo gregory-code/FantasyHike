@@ -169,6 +169,7 @@ MonoBehaviour:
   blankMaps: []
   myType: 2
   myRariety: 0
+  bMonsterDrop: 0
   shopDescription: Increases your strength by a very little
   buyPrice: 0
   itemName: Dagger

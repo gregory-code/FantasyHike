@@ -225,6 +225,7 @@ MonoBehaviour:
   blankMaps: []
   myType: 0
   myRariety: 0
+  bMonsterDrop: 1
   shopDescription: The slime collected by a blue slime... Icky..
   buyPrice: 0
   itemName: Blue Slime
@@ -234,8 +235,8 @@ MonoBehaviour:
   spellIcon: {fileID: 0}
   spellProjectile: {fileID: 0}
   particle: {fileID: 1817797803601600, guid: 94c15fd7747e2c84e9eaca5e1d2d8537, type: 3}
-  baseValue: 1
-  itemDescription: {fileID: -393533310392563367, guid: a4ba1f24df9d292449e72c0dab43aa86,
+  baseValue: 5
+  itemDescription: {fileID: -393533310392563367, guid: 9e6e936a5d38ebd4a95ffa840a45fd81,
     type: 3}
   targetsEnemies: 1
   targetsSelf: 1

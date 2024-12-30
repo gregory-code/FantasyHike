@@ -4,16 +4,26 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
+using static Enemy;
 
 public class Enemy : character, IPointerClickHandler
 {
     [Header("Enemy")]
+    [SerializeField] Animator attackIndicatorAnim;
     [SerializeField] enemyUI enemyUIPrefab;
     private enemyUI myUI;
 
+    [Header("Power Level")]
+    public int power;
+    [SerializeField] int maxHealthLevelUp;
+    [SerializeField] int strengthLevelUp;
+    [SerializeField] int magicLevelUp;
+    [SerializeField] int defenseLevelUp;
+
+    private GameObject enemyPos;
+
     private BattleManager battleManager;
 
-    [SerializeField] Animator attackIndicatorAnim;
 
     [SerializeField] item[] itemDropPool;
 
@@ -21,9 +31,19 @@ public class Enemy : character, IPointerClickHandler
 
     private bool bHasActed;
 
-    public void Init(BattleManager battleManager)
+    public delegate void OnEnemiesTurn(character player);
+    public event OnEnemiesTurn onEnemiesTurn;
+
+    public void Init(BattleManager battleManager, int upgradeLevel, GameObject pos)
     {
         this.battleManager = battleManager;
+
+        enemyPos = pos;
+
+        maxHealth += upgradeLevel * maxHealthLevelUp;
+        baseStrength += upgradeLevel * strengthLevelUp;
+        baseMagic += upgradeLevel * magicLevelUp;
+        baseDefense += upgradeLevel * defenseLevelUp;
 
         myUI = Instantiate(enemyUIPrefab, transform);
         myUI.transform.localPosition = new Vector2(0, yUIadjustment);
@@ -32,9 +52,14 @@ public class Enemy : character, IPointerClickHandler
         myUI.onDeath += Dead;
     }
 
-    public void Attack(character player)
+    public GameObject GetPos()
     {
-        StartCoroutine(BasicAttackAnimation(player));
+        return enemyPos;
+    }
+
+    public void EnemiesTurn(character player)
+    {
+        onEnemiesTurn?.Invoke(player);
     }
 
     private void Dead()

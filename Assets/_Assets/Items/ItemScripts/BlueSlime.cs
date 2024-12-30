@@ -11,13 +11,13 @@ public class BlueSlime : item
 
     private void UseMyEffect(item usingItem, character usingCharacter, character recivingCharacter)
     {
-        if (recivingCharacter.maxHealth / 3 > usingItem.baseValue)
+        if(recivingCharacter.isPlayer)
         {
-            recivingCharacter.Heal(recivingCharacter.maxHealth / 3);
+            recivingCharacter.Heal(baseValue);
         }
         else
         {
-            recivingCharacter.Heal(usingItem.baseValue);
+            recivingCharacter.TakeDamage(-baseValue);
         }
 
         onUseItem -= UseMyEffect;

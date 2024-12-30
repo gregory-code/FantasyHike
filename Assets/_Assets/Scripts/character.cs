@@ -124,7 +124,7 @@ public class character : MonoBehaviour, IPointerClickHandler
 
         StartCoroutine(ProcessItemEffect(consumeable, this, target));
 
-        Instantiate(consumeable.particle, characterRenderer.transform);
+        Instantiate(consumeable.particle, target.characterRenderer.transform);
 
         PlayAnim("idle");
     }

@@ -228,7 +228,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ee105d324fb186f4893b9114ffd5cd2c, type: 2}
   - {fileID: 11400000, guid: 86cbbd27caf7eea42958bb88dd95484e, type: 2}
   myType: 2
-  myRariety: 1
+  myRariety: 0
+  bMonsterDrop: 0
   shopDescription: Increased your strength by a little
   buyPrice: 0
   itemName: Pickaxe

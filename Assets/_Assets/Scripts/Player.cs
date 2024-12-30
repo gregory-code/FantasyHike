@@ -1,14 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Player : character
 {
+    private SaveManager saveManager;
+
     [Header("Player")]
-    [SerializeField] int maxMana;
+    [SerializeField] GameObject manaPopup;
+
 
     [SerializeField] playerUI playerUIPrefab;
     private playerUI myUI;
@@ -20,9 +23,30 @@ public class Player : character
 
     private void Start()
     {
+        saveManager = GameObject.FindObjectOfType<SaveManager>();
+
         myUI = Instantiate(playerUIPrefab, transform);
         myUI.transform.localPosition = new Vector2(0, 1.3f);
-        myUI.Init(this, maxHealth, maxMana);
+        myUI.Init(this, GetSaveData().maxHealth, GetSaveData().maxMana, GetSaveData().currentHealth, GetSaveData().currentMana);
+
+        myUI.onDeath += Dead;
+    }
+
+    public SaveData GetSaveData()
+    {
+        return saveManager.saveData;
+    }
+
+    private void Dead()
+    {
+        PlayAnim("dead");
+        StartCoroutine(DeathDelay());
+    }
+
+    private IEnumerator DeathDelay()
+    {
+        yield return new WaitForSeconds(1);
+        FindObjectOfType<BattleManager>().StartOver();
     }
 
     public void Attack(character target, item preparedEffect)
@@ -46,6 +70,15 @@ public class Player : character
     public int GetMana()
     {
         return myUI.GetMana();
+    }
+
+    public void AdjustMana(int cost)
+    {
+        myUI.TryUseMana(cost);
+        if (cost <= -1)
+        {
+            SpawnPopup(manaPopup, -cost);
+        }
     }
 
     public void ShowActions()

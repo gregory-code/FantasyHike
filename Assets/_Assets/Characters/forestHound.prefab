@@ -359,7 +359,7 @@ Transform:
   m_GameObject: {fileID: 2816177637504392619}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.27, y: 0.54, z: 0}
+  m_LocalPosition: {x: -0.27, y: 0.743, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -547,7 +547,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 920883753260909409}
-  - component: {fileID: 4530610346359278082}
+  - component: {fileID: 4491763660656128010}
   m_Layer: 0
   m_Name: forestHound
   m_TagString: Untagged
@@ -576,7 +576,7 @@ Transform:
   - {fileID: 705797653359696408}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4530610346359278082
+--- !u!114 &4491763660656128010
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -585,7 +585,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3715961672759044346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6685c7fac0cf104498b8de30de1a5f7a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ed4275b417cbc6419b102cf7a3ba477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spellIndicatorAnim: {fileID: 8631200768353357051}
@@ -597,17 +597,22 @@ MonoBehaviour:
   deathSmoke: {fileID: 119968, guid: 14b3d78875b54a9438ccfdac0b6a6737, type: 3}
   preparedEffect: {fileID: 0}
   currentHealth: 0
-  maxHealth: 15
+  maxHealth: 12
   baseStrength: 2
   baseMagic: 3
-  baseDefense: 1
+  baseDefense: 0
   isPlayer: 0
+  attackIndicatorAnim: {fileID: 5896859691357708295}
   enemyUIPrefab: {fileID: 5753015850022186099, guid: b6ae08907e12f0c4e9653c8e3fa327cf,
     type: 3}
-  attackIndicatorAnim: {fileID: 5896859691357708295}
+  power: 4
+  maxHealthLevelUp: 2
+  strengthLevelUp: 1
+  magicLevelUp: 0
+  defenseLevelUp: 0
   itemDropPool:
   - {fileID: 5161297047439027806, guid: ad6326885c8ddb241bf8e5d2c3d27578, type: 3}
-  yUIadjustment: 0.6
+  yUIadjustment: 0.65
 --- !u!1 &3852330360945891286
 GameObject:
   m_ObjectHideFlags: 0

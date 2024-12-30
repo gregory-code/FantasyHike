@@ -50,6 +50,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     };
 
     [Header("Shop")]
+    public bool bMonsterDrop;
     public string shopDescription;
     public int buyPrice;
 

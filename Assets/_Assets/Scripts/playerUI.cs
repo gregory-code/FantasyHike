@@ -13,6 +13,9 @@ public class playerUI : MonoBehaviour
 
     private Player owner;
 
+    float desiredMana;
+    float desiredHealth;
+
     public delegate void OnDeath();
     public event OnDeath onDeath;
 
@@ -22,24 +25,26 @@ public class playerUI : MonoBehaviour
     private int currentMana;
     private int maxMana = 1;
 
-    public void Init(Player owner, int maxHealth, int maxMana)
+    public void Init(Player owner, int maxHealth, int maxMana, int currentHealth, int currentMana)
     {
         this.owner = owner;
         owner.onHealthChanged += ChangeHealth;
 
         this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth;
+        this.currentHealth = currentHealth;
 
         owner.currentHealth = currentHealth;
 
         this.maxMana = maxMana;
-        this.currentMana = maxMana;
+        this.currentMana = currentMana;
 
         healthText.text = $"{currentHealth} / {maxHealth}";
         manaText.text = $"{currentMana} / {maxMana}";
 
-        health.fillAmount = 1f;
-        mana.fillAmount = 1f;
+        float desiredHealth = Round((float)currentHealth / (float)maxHealth);
+        float desiredMana = Round((float)currentMana / (float)maxMana);
+        health.fillAmount = desiredHealth;
+        mana.fillAmount = desiredMana;
     }
 
     public void ChangeHealth(int change)
@@ -48,7 +53,9 @@ public class playerUI : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         healthText.text = $"{currentHealth} / {maxHealth}";
         owner.currentHealth = currentHealth;
-        StartCoroutine(LerpValue(health, currentHealth, maxHealth));
+        desiredHealth = Round((float)currentHealth / (float)maxHealth);
+        StartCoroutine(LerpValue(health, true));
+        owner.GetSaveData().currentHealth = currentHealth;
 
         if (currentHealth <= 0)
         {
@@ -56,13 +63,11 @@ public class playerUI : MonoBehaviour
         }
     }
 
-    private IEnumerator LerpValue(Image image, int current, int max)
+    private IEnumerator LerpValue(Image image, bool health)
     {
-        float desiredHealth = Round((float)current / (float)max);
-
         while(Round(image.fillAmount) != desiredHealth)
         {
-            image.fillAmount = Mathf.Lerp(image.fillAmount, desiredHealth, 7 * Time.deltaTime);
+            image.fillAmount = Mathf.Lerp(image.fillAmount, (health) ? desiredHealth : desiredMana, 7 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
     }
@@ -84,7 +89,9 @@ public class playerUI : MonoBehaviour
             currentMana -= cost;
             currentMana = Mathf.Clamp(currentMana, 0, maxMana);
             manaText.text = $"{currentMana} / {maxMana}";
-            StartCoroutine(LerpValue(mana, currentMana, maxMana));
+            desiredMana = Round((float)currentMana / (float)maxMana);
+            StartCoroutine(LerpValue(mana, false));
+            owner.GetSaveData().currentMana = currentMana;
             return true;
         }
 

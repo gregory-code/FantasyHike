@@ -12,9 +12,9 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Material[] transitionMaterials;
 
     [SerializeField] Transform playerPos;
-    [SerializeField] Transform enemyPos;
+    private GameObject[] enemyPos;
 
-    [SerializeField] Enemy slime;
+    [SerializeField] Enemy[] enemyLibrary;
 
     bool moveToNextScene;
 
@@ -26,6 +26,8 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        enemyPos = GameObject.FindGameObjectsWithTag("enemyPos");
+
         saveManager = FindObjectOfType<SaveManager>();
         player = FindObjectOfType<Player>();
         player.onEndTurn += CharacterEndedTurn;
@@ -39,8 +41,11 @@ public class BattleManager : MonoBehaviour
         switch(saveManager.saveData.level)
         {
             case 1:
+            case 2:
+            case 3:
                 StartCoroutine(SetupFight());
                 break;
+
 
             default:
                 break;
@@ -51,10 +56,19 @@ public class BattleManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            saveManager.ResetSaveData();
-            Debug.LogWarning("Reset Data");
-            SceneManager.LoadScene("StartingScene");
+            StartOver();
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene("ForestScene");
+        }
+    }
+
+    public void StartOver()
+    {
+        saveManager.ResetSaveData();
+        SceneManager.LoadScene("StartingScene");
     }
 
     private void Onward()
@@ -128,7 +142,7 @@ public class BattleManager : MonoBehaviour
 
         if(remainingEnemies.Count >= 1)
         {
-            remainingEnemies[Random.Range(0, remainingEnemies.Count)].Attack(player);
+            remainingEnemies[Random.Range(0, remainingEnemies.Count)].EnemiesTurn(player);
         }
         else
         {
@@ -137,7 +151,7 @@ public class BattleManager : MonoBehaviour
                 enemy.SetHasActed(false);
             }
 
-            if(enemies.Count > 0)
+            if(enemies.Count > 0 && player.currentHealth >= 1)
                 player.ShowActions();
         }
     }
@@ -151,6 +165,11 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    public Enemy[] GetAllEnemies()
+    {
+        return enemies.ToArray();
+    }
+
     private IEnumerator EndFight()
     {
         yield return new WaitForSeconds(0.5f);
@@ -162,22 +181,48 @@ public class BattleManager : MonoBehaviour
     {
         enemies.Clear();
 
-        Vector3 spawnPos = enemyPos.position;
-        spawnPos.x += 10f;
+        int totalPower = saveManager.saveData.level;
 
-        SpawnEnemy(spawnPos);
+        for(int i = 0; i < enemyPos.Length; i++)
+        {
+            if (totalPower == 0)
+                break;
 
-        yield return new WaitForSeconds(3f);
+            List<Enemy> enemyPool = new List<Enemy>();
+            foreach(Enemy possbileEnemy in enemyLibrary)
+            {
+                if (possbileEnemy.power <= totalPower)
+                    enemyPool.Add(possbileEnemy);
+            }
+
+            int randomEnemy = Random.Range(0, enemyPool.Count);
+            totalPower -= enemyPool[randomEnemy].power;
+
+            int addedPower = 0;
+            if (totalPower > 0)
+            {
+                addedPower = (i == enemyPos.Length - 1) ? totalPower : Random.Range(0, totalPower + 1);
+                totalPower -= addedPower;
+            }
+
+            GameObject pos = enemyPos[i];
+            SpawnEnemy(enemyPool[randomEnemy], addedPower, pos);
+
+            yield return new WaitForSeconds(1f);
+        }
 
         player.ShowActions();
     }
 
-    private void SpawnEnemy(Vector3 spawnPos)
+    private void SpawnEnemy(Enemy enemyPrefab, int upgradeLevel, GameObject pos)
     {
-        Enemy newEnemy = Instantiate(slime, spawnPos, Quaternion.identity);
-        newEnemy.Init(this);
+        Vector3 actualPos = pos.transform.position;
+        actualPos.x += 10.0f;
+
+        Enemy newEnemy = Instantiate(enemyPrefab, actualPos, Quaternion.identity);
+        newEnemy.Init(this, upgradeLevel, pos);
         newEnemy.onEndTurn += CharacterEndedTurn;
         enemies.Add(newEnemy);
-        StartCoroutine(newEnemy.MoveTo(enemyPos));
+        StartCoroutine(newEnemy.MoveTo(pos.transform));
     }
 }

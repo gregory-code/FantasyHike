@@ -11,7 +11,11 @@ public class BlueRune : item
 
     private void UseMyEffect(item usingItem, character usingCharacter, character recivingCharacter)
     {
-        recivingCharacter.TakeDamage(-(usingItem.baseValue + usingCharacter.baseMagic));
+        Enemy[] allEnemies = FindObjectOfType<BattleManager>().GetAllEnemies();
+        for(int i = 0; i < allEnemies.Length; i++)
+        {
+            allEnemies[i].TakeDamage(-(usingItem.baseValue + usingCharacter.baseMagic));
+        }
     }
 
     private void OnDestroy()

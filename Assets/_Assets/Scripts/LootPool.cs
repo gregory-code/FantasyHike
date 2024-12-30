@@ -26,7 +26,7 @@ public class LootPool : MonoBehaviour
         while (Vector3.Distance(transform.localPosition, shownPos) >= 0.3f)
         {
             yield return new WaitForEndOfFrame();
-            Vector3 newMovePos = Vector3.Lerp(transform.localPosition, shownPos, 6 * Time.deltaTime);
+            Vector3 newMovePos = Vector3.Lerp(transform.localPosition, shownPos, 12 * Time.deltaTime);
             transform.localPosition = newMovePos;
         }
         GiveItems();

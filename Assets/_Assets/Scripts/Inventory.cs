@@ -66,6 +66,8 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     private void InitSaveData()
     {
+        SetMoney(saveManager.saveData.money);
+
         int newSizeX = saveManager.saveData.sizeX;
         int newSizeY = saveManager.saveData.sizeY;
         x = newSizeX;
@@ -96,6 +98,7 @@ public class Inventory : MonoBehaviour, IDragHandler
 
     public void SetMoney(int newMoney)
     {
+        money = newMoney;
         moneyText.text = "" + newMoney;
     }
 

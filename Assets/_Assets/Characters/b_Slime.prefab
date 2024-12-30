@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3698714291343244521}
-  - component: {fileID: 4738868632277899652}
+  - component: {fileID: -9173020443392406145}
   m_Layer: 0
   m_Name: b_Slime
   m_TagString: Untagged
@@ -38,7 +38,7 @@ Transform:
   - {fileID: 6751679374075623881}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4738868632277899652
+--- !u!114 &-9173020443392406145
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1111664259584097843}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6685c7fac0cf104498b8de30de1a5f7a, type: 3}
+  m_Script: {fileID: 11500000, guid: fbcbc77d446ed69438d8340159e9c02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spellIndicatorAnim: {fileID: 4671076294925342731}
@@ -64,9 +64,14 @@ MonoBehaviour:
   baseMagic: 0
   baseDefense: 0
   isPlayer: 0
+  attackIndicatorAnim: {fileID: 8690718320294089129}
   enemyUIPrefab: {fileID: 5753015850022186099, guid: b6ae08907e12f0c4e9653c8e3fa327cf,
     type: 3}
-  attackIndicatorAnim: {fileID: 8690718320294089129}
+  power: 1
+  maxHealthLevelUp: 1
+  strengthLevelUp: 1
+  magicLevelUp: 0
+  defenseLevelUp: 0
   itemDropPool:
   - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}
   - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}
@@ -74,7 +79,7 @@ MonoBehaviour:
   - {fileID: 2165570206391184707, guid: c6ba009117aa60b4f9bf7d341eed9f1c, type: 3}
   - {fileID: 2165570206391184707, guid: c6ba009117aa60b4f9bf7d341eed9f1c, type: 3}
   - {fileID: 8322538409897077237, guid: 3523fdd6cb39e1e43a413d46a5ff8365, type: 3}
-  yUIadjustment: 0.6
+  yUIadjustment: 0.5
 --- !u!1 &1471349927532780335
 GameObject:
   m_ObjectHideFlags: 0
