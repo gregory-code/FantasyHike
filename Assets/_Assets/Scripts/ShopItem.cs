@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -34,10 +35,36 @@ public class ShopItem : MonoBehaviour
 
     [SerializeField] Image[] fakeSlots;
 
+    private int myPrice;
     //public item testItem;
 
     public delegate void OnItemPicked(ShopItem shopItem);
     public event OnItemPicked onItemPicked;
+
+    public void Init(item itemInit, bool freeItem)
+    {
+        if (freeItem)
+            myPrice = 0;
+        else
+            myPrice = itemInit.buyPrice;
+
+        myItem = itemInit;
+        itemIcon.sprite = itemInit.itemIcon;
+        itemNameText.text = itemInit.itemName;
+        itemPriceText.text = myPrice + "";
+        descriptoinText.text = itemInit.shopDescription;
+        SetRariety(itemInit.myRariety);
+        HighlightItem(itemInit);
+
+        CheckInteraction();
+
+        FindObjectOfType<ShopManager>().onMoneyChanged += moneyChanged;
+    }
+
+    private void moneyChanged(int newMoney)
+    {
+        CheckInteraction();
+    }
 
     public void Start()
     {
@@ -47,39 +74,24 @@ public class ShopItem : MonoBehaviour
     public void TryBuy()
     {
         Inventory playerInventory = FindObjectOfType<Inventory>();
-        if(myItem.buyPrice <= playerInventory.GetMoney())
+        if(myPrice <= playerInventory.GetMoney())
         {
+            FindObjectOfType<ShopManager>().onMoneyChanged -= moneyChanged;
             item spawnItem = Instantiate(myItem, this.transform);
             spawnItem.Init(new Vector3((spawnItem.itemSize.x - 1) * -45, (spawnItem.itemSize.y - 1) * 45, 0), 0);
             spawnItem.transform.SetParent(playerInventory.transform);
+            spawnItem.transform.localScale = Vector3.one;
+            playerInventory.SetMoney(playerInventory.GetMoney() - myPrice);
 
             onItemPicked?.Invoke(this);
-
-            playerInventory.SetMoney(playerInventory.GetMoney() - myItem.buyPrice);
             Destroy(this.gameObject);
         }
-    }
-
-    public void Init(item itemInit, bool freeItem)
-    {
-        if(freeItem)
-            itemInit.buyPrice = 0;
-
-        myItem = itemInit;
-        itemIcon.sprite = itemInit.itemIcon;
-        itemNameText.text = itemInit.itemName;
-        itemPriceText.text = itemInit.buyPrice + "";
-        descriptoinText.text = itemInit.shopDescription;
-        SetRariety(itemInit.myRariety);
-        HighlightItem(itemInit);
-
-        CheckInteraction();
     }
 
     private void CheckInteraction()
     {
         int currentMoney = FindObjectOfType<Inventory>().GetMoney();
-        if (myItem.buyPrice > currentMoney)
+        if (myPrice > currentMoney)
         {
             canvasGroup.interactable = false;
             canvasGroup.alpha = 0.7f;

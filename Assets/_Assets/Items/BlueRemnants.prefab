@@ -227,7 +227,7 @@ MonoBehaviour:
   myRariety: 0
   bMonsterDrop: 1
   shopDescription: It's the leftover bits of a blue slime... Weird
-  buyPrice: 0
+  buyPrice: 4
   itemName: Blue Remnants
   itemIcon: {fileID: 21300000, guid: da8d5f7dd4730974f966ef845d1723db, type: 3}
   manaCost: 0

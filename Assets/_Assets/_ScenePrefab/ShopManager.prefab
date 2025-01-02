@@ -49,7 +49,9 @@ MonoBehaviour:
   shopItemTemplate: {fileID: 5414892952850494150, guid: 6513d91b03f6f5f489311fcb49945a88,
     type: 3}
   moneyPoofVFX: {fileID: 19806904, guid: bb5363fd4b4517e4fafbcdbff8bbf0ab, type: 3}
+  ShopKeepers:
+  - {fileID: 2953539080156604483, guid: e8f96770e95816e49ab55894999b9077, type: 3}
   sellMenu: {fileID: 0}
-  nonAvaiableSellMenu: {x: 490, y: 510, z: 0}
-  avaiableSellMenu: {x: 490, y: 435, z: 0}
-  shownSellMenu: {x: 490, y: 300, z: 0}
+  nonAvaiableSellMenu: {x: 400, y: 510, z: 0}
+  avaiableSellMenu: {x: 400, y: 370, z: 0}
+  shownSellMenu: {x: 400, y: 220, z: 0}

@@ -12,6 +12,9 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField] ParticleSystem moneyPoofVFX;
 
+    [SerializeField] GameObject[] ShopKeepers;
+    private Animator shopKeeperAnimator;
+
     private SaveManager saveManager;
     private Inventory playerInventory;
 
@@ -33,17 +36,20 @@ public class ShopManager : MonoBehaviour
 
     private bool bChooseOne;
 
+    public delegate void OnMoneyChanged(int newMoney);
+    public event OnMoneyChanged onMoneyChanged;
+
     public void Start()
     {
         saveManager = FindObjectOfType<SaveManager>();
         playerInventory = FindObjectOfType<Inventory>();
 
-        foreach(item foundItem in playerInventory.GetItemLibrary())
+        foreach (item foundItem in playerInventory.GetItemLibrary())
         {
             if (foundItem.bMonsterDrop)
                 continue;
 
-            switch(foundItem.myRariety)
+            switch (foundItem.myRariety)
             {
                 case item.itemRariety.common:
                     commonItems.Add(foundItem);
@@ -75,10 +81,34 @@ public class ShopManager : MonoBehaviour
                 AllowSelling(false);
                 break;
 
+            case 3:
+                SpawnShopKeeper(0);
+                GiveSelection(false, GetCombinedList(commonItems, uncommonItems));
+                break;
+
             default:
                 AllowSelling(false);
                 break;
         }
+    }
+
+    private void SpawnShopKeeper(int which)
+    {
+        GameObject shopKeeper = Instantiate(ShopKeepers[which], new Vector3(0, 0, 4), ShopKeepers[which].transform.rotation);
+        shopKeeperAnimator = shopKeeper.GetComponent<Animator>();
+
+        AllowSelling(true);
+        StartCoroutine(FindObjectOfType<OnwardButton>().Show());
+    }
+
+    private List<item> GetCombinedList(List<item> list1, List<item> list2)
+    {
+        List<item> combinedList = list1;
+        foreach(item newItem in list2)
+        {
+            combinedList.Add(newItem);
+        }
+        return combinedList;
     }
 
     private void GiveSelection(bool freeItems, List<item> itemGroup)
@@ -111,7 +141,7 @@ public class ShopManager : MonoBehaviour
             currentShopItems.Add(newShopItem);
             newShopItem.onItemPicked += itemPicked;
             newShopItem.transform.SetSiblingIndex(4);
-            newShopItem.transform.localPosition = new Vector3((i * 300) - 300, 100, 0);
+            newShopItem.transform.localPosition = new Vector3((i * 200) - 200, 100, 0);
             newShopItem.Init(newItem, freeItems);
         }
     }
@@ -127,6 +157,14 @@ public class ShopManager : MonoBehaviour
             }
             currentShopItems.Clear();
             StartCoroutine(FindObjectOfType<OnwardButton>().Show());
+        }
+
+        Inventory playerInventory = FindObjectOfType<Inventory>();
+        onMoneyChanged?.Invoke(playerInventory.GetMoney());
+
+        if (shopKeeperAnimator != null)
+        {
+            shopKeeperAnimator.SetTrigger("approval");
         }
     }
 
@@ -175,6 +213,7 @@ public class ShopManager : MonoBehaviour
         Destroy(moneyBurst, 1);
 
         playerInventory.SetMoney(playerInventory.GetMoney() + itemValue);
+        onMoneyChanged?.Invoke(playerInventory.GetMoney());
     }
 
     private IEnumerator MoveSellMenu()

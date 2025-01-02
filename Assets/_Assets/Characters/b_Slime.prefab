@@ -72,6 +72,7 @@ MonoBehaviour:
   strengthLevelUp: 1
   magicLevelUp: 0
   defenseLevelUp: 0
+  moneyYield: 3
   itemDropPool:
   - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}
   - {fileID: 7503672824517737500, guid: c8ae0cd5ff5fbd6479574d084c0bd6da, type: 3}

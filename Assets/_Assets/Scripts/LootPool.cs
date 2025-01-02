@@ -10,7 +10,13 @@ public class LootPool : MonoBehaviour
 
     public void RegisterItemToLootPool(item toRegister)
     {
+        toRegister.SetInLootPool(true);
         lootItems.Add(toRegister);
+    }
+
+    public List<item> GetLootItems()
+    {
+        return lootItems;
     }
 
     public Transform GetRandomSpawn()
@@ -39,6 +45,8 @@ public class LootPool : MonoBehaviour
         {
             if (loot == null)
                 continue;
+
+            loot.SetInLootPool(false);
             loot.transform.SetParent(playerInventory.transform);
         }
         lootItems.Clear();

@@ -169,8 +169,9 @@ MonoBehaviour:
   blankMaps: []
   myType: 0
   myRariety: 0
+  bMonsterDrop: 0
   shopDescription: One time consumable heal during battle
-  buyPrice: 6
+  buyPrice: 3
   itemName: Health Potion
   itemIcon: {fileID: 21300000, guid: c138bc7094e1c0b4e962c675b55b2b24, type: 3}
   manaCost: 0

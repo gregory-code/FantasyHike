@@ -96,7 +96,7 @@ MonoBehaviour:
   myRariety: 1
   bMonsterDrop: 0
   shopDescription: Learn the fireball spell, a powerful single target attack
-  buyPrice: 0
+  buyPrice: 10
   itemName: Scorching Rune
   itemIcon: {fileID: 21300000, guid: a56b45fef56a5bf48846cc967fb149d3, type: 3}
   manaCost: 3

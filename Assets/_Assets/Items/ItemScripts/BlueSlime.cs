@@ -14,10 +14,11 @@ public class BlueSlime : item
         if(recivingCharacter.isPlayer)
         {
             recivingCharacter.Heal(baseValue);
+            recivingCharacter.GetComponent<Player>().AdjustMana(-3);
         }
         else
         {
-            recivingCharacter.TakeDamage(-baseValue);
+            recivingCharacter.TakeDamage(-baseValue - 2);
         }
 
         onUseItem -= UseMyEffect;

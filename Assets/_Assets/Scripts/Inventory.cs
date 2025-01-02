@@ -99,7 +99,8 @@ public class Inventory : MonoBehaviour, IDragHandler
     public void SetMoney(int newMoney)
     {
         money = newMoney;
-        moneyText.text = "" + newMoney;
+        saveManager.saveData.money = money;
+        moneyText.text = "" + money;
     }
 
     public int GetMoney()
@@ -347,7 +348,7 @@ public class Inventory : MonoBehaviour, IDragHandler
 
         foreach (item movingItem in allItems)
         {
-            if (movingItem.InInventory() == false)
+            if (movingItem.InInventory() == false && movingItem.GetInLootPool() == false)
             {
                 movingItem.GetComponent<RectTransform>().anchoredPosition -= actualDelta;
             }

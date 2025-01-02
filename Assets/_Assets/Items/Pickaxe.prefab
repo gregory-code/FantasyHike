@@ -231,7 +231,7 @@ MonoBehaviour:
   myRariety: 0
   bMonsterDrop: 0
   shopDescription: Increased your strength by a little
-  buyPrice: 0
+  buyPrice: 7
   itemName: Pickaxe
   itemIcon: {fileID: 21300000, guid: f7238a4f8cd6a1f4a9fa3c5d16f620a3, type: 3}
   manaCost: 0

@@ -24,6 +24,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     private Vector2 gridPos;
     private int blankNum;
     private bool bInitalized;
+    private bool bInLootPool;
 
     [Header("Item")]
 
@@ -127,6 +128,16 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     public void UseItem(item usingItem, character usingCharacter, character recivingCharacter)
     {
         onUseItem?.Invoke(usingItem, usingCharacter, recivingCharacter);
+    }
+
+    public void SetInLootPool(bool state)
+    {
+        bInLootPool = state;
+    }
+
+    public bool GetInLootPool()
+    {
+        return bInLootPool;
     }
 
     public int GetBlankNum()

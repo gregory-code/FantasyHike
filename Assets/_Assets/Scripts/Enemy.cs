@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.TextCore.Text;
-using static Enemy;
+using UnityEngine.UIElements;
 
 public class Enemy : character, IPointerClickHandler
 {
@@ -25,6 +24,7 @@ public class Enemy : character, IPointerClickHandler
     private BattleManager battleManager;
 
 
+    [SerializeField] int moneyYield;
     [SerializeField] item[] itemDropPool;
 
     [SerializeField] float yUIadjustment;
@@ -86,12 +86,43 @@ public class Enemy : character, IPointerClickHandler
     {
         yield return new WaitForSeconds(0.4f);
 
+        LootPool lootPool = FindObjectOfType<LootPool>();
+        SaveManager saveManager = FindObjectOfType<SaveManager>();
+
+        int randomItem = Random.Range(0, itemDropPool.Length);
+        bool noItem = false;
+
         if(Random.Range(0, 4) >= 1)
         {
-            LootPool lootPool = FindObjectOfType<LootPool>();
 
-            int randomItem = Random.Range(0, itemDropPool.Length);
+            for (int i = 0; i < saveManager.saveData.itemIDs.Count; i++)
+            {
+                if (itemDropPool[randomItem].itemName == saveManager.GetIDName(i))
+                {
+                    noItem = true;
+                }
+            }
 
+            foreach(item item in lootPool.GetLootItems())
+            {
+                if (itemDropPool[randomItem].itemName == item.itemName)
+                {
+                    noItem = true;
+                }
+            }
+        }
+        else
+        {
+            noItem = true;
+        }
+
+        if (noItem)
+        {
+            Inventory playerInventory = FindObjectOfType<Inventory>();
+            playerInventory.SetMoney(playerInventory.GetMoney() + moneyYield);
+        }
+        else
+        {
             Transform spawn = lootPool.GetRandomSpawn();
             item droppedItem = Instantiate(itemDropPool[randomItem], spawn);
             droppedItem.Init(new Vector3((droppedItem.itemSize.x - 1) * -45, (droppedItem.itemSize.y - 1) * 45, 0), 0);
