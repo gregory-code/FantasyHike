@@ -64,6 +64,18 @@ public class Inventory : MonoBehaviour, IDragHandler
         }
     }
 
+    public void AddInventorySize(int addedX, int addedY)
+    {
+        x += addedX;
+        y += addedY;
+        Resize(x, y, true);
+    }
+
+    public Vector2 GetInventorySize()
+    {
+        return new Vector2(x, y);
+    }
+
     private void InitSaveData()
     {
         SetMoney(saveManager.saveData.money);

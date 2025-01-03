@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
 using UnityEngine.Pool;
+using static Enemy;
 
 public class character : MonoBehaviour, IPointerClickHandler
 {
@@ -43,6 +44,12 @@ public class character : MonoBehaviour, IPointerClickHandler
 
     public Dictionary<string, float> animLength = new Dictionary<string, float>();
 
+    public delegate void OnStatusEffectApplied(character usingCharacter, character recivingCharacter, StatusEffect applyEffect, int startingValue);
+    public event OnStatusEffectApplied onStatusEffectApplied;
+
+    public delegate void OnStartTurn(character character);
+    public event OnStartTurn onStartTurn;
+
     public delegate void OnEndTurn(character character);
     public event OnEndTurn onEndTurn;
 
@@ -64,6 +71,16 @@ public class character : MonoBehaviour, IPointerClickHandler
         spellCastPoint = transform.GetChild(2).GetComponent<Transform>();
 
         GetAnimLengths();
+    }
+
+    public void ApplyStatusEffect(character usingCharacter, character recivingCharacter, StatusEffect applyEffect, int startingValue)
+    {
+        onStatusEffectApplied?.Invoke(usingCharacter, recivingCharacter, applyEffect, startingValue);
+    }
+
+    public void CharactersTurn(character player)
+    {
+        onStartTurn?.Invoke(player);
     }
 
     public void SetPreparedEffect(item itemEffect)

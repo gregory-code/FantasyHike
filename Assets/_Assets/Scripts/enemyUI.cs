@@ -8,6 +8,7 @@ public class enemyUI : MonoBehaviour
 {
     [SerializeField] Image health;
     [SerializeField] TextMeshProUGUI healthText;
+    public Transform statusEffectTransform;
 
     private Enemy owner;
 

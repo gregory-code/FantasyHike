@@ -200,9 +200,9 @@ public class ShopManager : MonoBehaviour
     {
         Inventory playerInventory = FindObjectOfType<Inventory>();
         //sell it here
+        saveManager.saveData.itemIDs.Remove($"{itemToSell.itemName}/{itemToSell.GetGridPos().x}_{itemToSell.GetGridPos().y}/{itemToSell.GetBlankNum()}");
         playerInventory.RegistarItem(itemToSell, false);
         itemToSell.RemoveItem();
-        saveManager.saveData.itemIDs.Remove($"{itemToSell.itemName}/{itemToSell.GetGridPos().x}_{itemToSell.GetGridPos().y}");
         Destroy(itemToSell.gameObject);
 
         ParticleSystem moneyBurst = Instantiate(moneyPoofVFX, new Vector3(2.4f, 1.3f, 4), moneyPoofVFX.transform.rotation);

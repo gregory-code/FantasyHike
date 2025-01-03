@@ -31,9 +31,6 @@ public class Enemy : character, IPointerClickHandler
 
     private bool bHasActed;
 
-    public delegate void OnEnemiesTurn(character player);
-    public event OnEnemiesTurn onEnemiesTurn;
-
     public void Init(BattleManager battleManager, int upgradeLevel, GameObject pos)
     {
         this.battleManager = battleManager;
@@ -50,16 +47,18 @@ public class Enemy : character, IPointerClickHandler
         myUI.Init(this, maxHealth);
 
         myUI.onDeath += Dead;
+        onStatusEffectApplied += ApplyStatus;
+    }
+
+    private void ApplyStatus(character usingCharacter, character recivingCharacter, StatusEffect applyEffect, int startingValue)
+    {
+        StatusEffect effect = Instantiate(applyEffect, myUI.statusEffectTransform);
+        effect.Init(recivingCharacter, usingCharacter, startingValue);
     }
 
     public GameObject GetPos()
     {
         return enemyPos;
-    }
-
-    public void EnemiesTurn(character player)
-    {
-        onEnemiesTurn?.Invoke(player);
     }
 
     private void Dead()

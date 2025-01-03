@@ -612,7 +612,7 @@ MonoBehaviour:
   defenseLevelUp: 0
   moneyYield: 6
   itemDropPool:
-  - {fileID: 5161297047439027806, guid: ad6326885c8ddb241bf8e5d2c3d27578, type: 3}
+  - {fileID: -8381295454572840741, guid: 691ecaf787f0f204e9341efee584109d, type: 3}
   yUIadjustment: 0.65
 --- !u!1 &3852330360945891286
 GameObject:

@@ -143,7 +143,7 @@ public class BattleManager : MonoBehaviour
 
         if(remainingEnemies.Count >= 1)
         {
-            remainingEnemies[Random.Range(0, remainingEnemies.Count)].EnemiesTurn(player);
+            remainingEnemies[Random.Range(0, remainingEnemies.Count)].CharactersTurn(player);
         }
         else
         {
@@ -153,7 +153,9 @@ public class BattleManager : MonoBehaviour
             }
 
             if(enemies.Count > 0 && player.currentHealth >= 1)
+            {
                 player.ShowActions();
+            }
         }
     }
 

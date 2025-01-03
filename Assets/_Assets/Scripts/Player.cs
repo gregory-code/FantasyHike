@@ -30,6 +30,28 @@ public class Player : character
         myUI.Init(this, GetSaveData().maxHealth, GetSaveData().maxMana, GetSaveData().currentHealth, GetSaveData().currentMana);
 
         myUI.onDeath += Dead;
+        onStatusEffectApplied += ApplyStatus;
+    }
+
+    private void ApplyStatus(character usingCharacter, character recivingCharacter, StatusEffect applyEffect, int startingValue)
+    {
+        StatusEffect effect = Instantiate(applyEffect, myUI.statusEffectTransform);
+        effect.Init(recivingCharacter, usingCharacter, startingValue);
+    }
+
+    public void AddStats(int moreMaxHealth, int moreMaxMana, int moreStrength, int moreMagic, int moreDefense)
+    {
+        myUI.AddedMaxHealth(moreMaxHealth);
+        myUI.AddedMaxMana(moreMaxMana);
+
+        baseStrength += moreStrength;
+        //there's no save data for strength/magic/defense
+
+        baseMagic += moreMagic;
+        //there's no save data for strength/magic/defense
+
+        baseDefense += moreDefense;
+        //there's no save data for strength/magic/defense
     }
 
     public SaveData GetSaveData()
@@ -83,6 +105,7 @@ public class Player : character
 
     public void ShowActions()
     {
+        CharactersTurn(this);
         actionButtons = Instantiate(actionButtonsPrefab, transform);
         actionButtons.transform.localPosition = new Vector2(0, 0.9f);
         actionButtons.Init(this, inventory);

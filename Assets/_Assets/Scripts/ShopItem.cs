@@ -56,9 +56,15 @@ public class ShopItem : MonoBehaviour
         SetRariety(itemInit.myRariety);
         HighlightItem(itemInit);
 
-        CheckInteraction();
+        StartCoroutine(LateInit());
 
         FindObjectOfType<ShopManager>().onMoneyChanged += moneyChanged;
+    }
+
+    private IEnumerator LateInit()
+    {
+        yield return new WaitForEndOfFrame();
+        CheckInteraction();
     }
 
     private void moneyChanged(int newMoney)

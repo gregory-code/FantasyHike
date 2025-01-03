@@ -10,6 +10,7 @@ public class playerUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] Image mana;
     [SerializeField] TextMeshProUGUI manaText;
+    public Transform statusEffectTransform;
 
     private Player owner;
 
@@ -47,6 +48,18 @@ public class playerUI : MonoBehaviour
         mana.fillAmount = desiredMana;
     }
 
+    public void AddedMaxHealth(int addedMaxHealth)
+    {
+        maxHealth += addedMaxHealth;
+        ChangeHealth(addedMaxHealth);
+    }
+
+    public void AddedMaxMana(int addedMaxMana)
+    {
+        maxMana += addedMaxMana;
+        TryUseMana(-addedMaxMana);
+    }
+
     public void ChangeHealth(int change)
     {
         currentHealth += change;
@@ -55,6 +68,7 @@ public class playerUI : MonoBehaviour
         owner.currentHealth = currentHealth;
         desiredHealth = Round((float)currentHealth / (float)maxHealth);
         StartCoroutine(LerpValue(health, true));
+        owner.GetSaveData().maxHealth = maxHealth;
         owner.GetSaveData().currentHealth = currentHealth;
 
         if (currentHealth <= 0)
@@ -91,6 +105,7 @@ public class playerUI : MonoBehaviour
             manaText.text = $"{currentMana} / {maxMana}";
             desiredMana = Round((float)currentMana / (float)maxMana);
             StartCoroutine(LerpValue(mana, false));
+            owner.GetSaveData().maxMana = maxMana;
             owner.GetSaveData().currentMana = currentMana;
             return true;
         }

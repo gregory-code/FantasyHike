@@ -51,24 +51,6 @@ public class usableItem : MonoBehaviour, IPointerDownHandler
         }
     }
 
-    public bool IsAttackingSpell()
-    {
-        if(itemOwner.targetsEnemies && isSpell)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public bool IsSelfConsumable()
-    {
-        if(itemOwner.targetsSelf && !isSpell)
-        {
-            return true;
-        }
-        return false;
-    }
-
     public void SelectThisItem()
     {
         StartCoroutine(SelectThisItemDelay());

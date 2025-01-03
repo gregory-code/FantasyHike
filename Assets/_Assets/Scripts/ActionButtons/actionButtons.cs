@@ -96,12 +96,12 @@ public class actionButtons : MonoBehaviour
                 currentUsableItem.list.gameObject.SetActive(true);
                 inspectingItem = false;
 
-                if(currentUsableItem.IsAttackingSpell())
+                if (currentUsableItem.isSpell)
                 {
                     TargettingSpell(false, currentUsableItem);
                 }
 
-                if(currentUsableItem.IsSelfConsumable())
+                if (currentUsableItem.isSpell == false)
                 {
                     TargettingConsumable(false, currentUsableItem);
                 }
@@ -138,12 +138,12 @@ public class actionButtons : MonoBehaviour
         inspectingItem = true;
         currentUsableItem = selectingItem;
 
-        if(selectingItem.IsAttackingSpell())
+        if(selectingItem.isSpell)
         {
             TargettingSpell(true, selectingItem);
         }
 
-        if(selectingItem.IsSelfConsumable())
+        if(selectingItem.isSpell == false)
         {
             TargettingConsumable(true, selectingItem);
         }
@@ -192,12 +192,12 @@ public class actionButtons : MonoBehaviour
 
         if(currentUsableItem != null)
         {
-            if(currentUsableItem.IsAttackingSpell())
+            if (currentUsableItem.isSpell)
             {
                 TargettingSpell(false, currentUsableItem);
             }
 
-            if(currentUsableItem.IsSelfConsumable())
+            if (currentUsableItem.isSpell == false)
             {
                 TargettingConsumable(false, currentUsableItem);
             }
@@ -312,7 +312,8 @@ public class actionButtons : MonoBehaviour
     private void TargettingSpell(bool state, usableItem usingSpell)
     {
         List<character> targettingCharacters = new List<character>();
-        if(usingSpell.itemOwner.targetsEnemies)
+
+        if (usingSpell.itemOwner.targetsEnemies)
         {
             targettingCharacters = FindObjectsOfType<Enemy>().ToList<character>();
         }

@@ -6,7 +6,7 @@ public class Enemy_ForestHound : Enemy
 {
     void Start()
     {
-        onEnemiesTurn += myTurn;
+        onStartTurn += myTurn;
     }
 
     private void myTurn(character player)
