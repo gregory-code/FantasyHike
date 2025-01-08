@@ -29,7 +29,14 @@ public class projectile : MonoBehaviour
             GameObject hit = Instantiate(hitVFX, transform.position, transform.rotation);
             hit.transform.SetParent(null);
 
+                
             StartCoroutine(target.ProcessItemEffect(spell, usingCharacter, target));
+
+            if(transform.childCount > 0)
+            {
+                Destroy(transform.GetChild(0).gameObject, 0.3f);
+                transform.GetChild(0).SetParent(null);
+            }
 
             Destroy(hit, 1f);
             Destroy(this.gameObject);

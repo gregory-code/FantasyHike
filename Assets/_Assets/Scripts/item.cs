@@ -65,6 +65,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     public int manaCost;
     public string spellName;
     public Sprite spellIcon;
+    public bool bOffScreenProj;
     public projectile spellProjectile;
 
     [Header("Item Specific")]
@@ -85,6 +86,9 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
     public delegate void OnUseItem(item usingItem, character usingCharacter, character recivingCharacter);
     public event OnUseItem onUseItem;
+
+    public delegate void OnUseOffScreenItem(item usingItem, character usingCharacter, character recivingCharacter);
+    public event OnUseItem onUseOffScreenItem;
 
     public void Start()
     {
@@ -128,6 +132,11 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
     public void UseItem(item usingItem, character usingCharacter, character recivingCharacter)
     {
         onUseItem?.Invoke(usingItem, usingCharacter, recivingCharacter);
+    }
+
+    public void UseOffScreenProj(item usingItem, character usingCharacter, character recivingCharacter)
+    {
+        onUseOffScreenItem?.Invoke(usingItem, usingCharacter, recivingCharacter);
     }
 
     public void SetInLootPool(bool state)
@@ -308,7 +317,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
     private IEnumerator DoubleClickDelay()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         isClicked = false;
     }
 
@@ -350,6 +359,7 @@ public class item : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHand
 
     public void OnEndDrag(PointerEventData eventData)
     {
+
         FindObjectOfType<ShopManager>().ItemDrag(this, false);
 
         inInventory = false;

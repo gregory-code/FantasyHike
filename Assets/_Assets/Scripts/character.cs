@@ -123,10 +123,19 @@ public class character : MonoBehaviour, IPointerClickHandler
         PlayAnim("spellAttack");
         yield return new WaitForSeconds(animLength["spellAttack"] / 3f);
         yield return new WaitForSeconds(animLength["spellAttack"] / 3f);
-        projectile spellProjectile = Instantiate(spell.spellProjectile, spellCastPoint.transform.position, spellCastPoint.transform.rotation);
-        spellProjectile.Init(target, spell, this, isPlayer);
-
         PlayAnim("idle");
+
+
+        if(spell.bOffScreenProj)
+        {
+            yield return StartCoroutine(target.ProcessOffScreenItemEffect(spell, this, target));
+        }
+        else
+        {
+            projectile spellProjectile = Instantiate(spell.spellProjectile, spellCastPoint.transform.position, spellCastPoint.transform.rotation);
+            spellProjectile.Init(target, spell, this, isPlayer);
+        }
+
 
         yield return new WaitForSeconds(1.2f);
 
@@ -192,6 +201,15 @@ public class character : MonoBehaviour, IPointerClickHandler
         yield return new WaitForSeconds(1.2f);
 
         onEndTurn?.Invoke(this);
+    }
+
+    public IEnumerator ProcessOffScreenItemEffect(item effect, character usingCharacter, character recivingCharacter)
+    {
+        effect.UseOffScreenProj(effect, usingCharacter, recivingCharacter);
+
+        yield return new WaitForSeconds(1.2f);
+
+        //onEndTurn?.Invoke(this);
     }
 
     public IEnumerator DeathSmoke()

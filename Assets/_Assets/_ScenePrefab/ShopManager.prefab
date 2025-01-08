@@ -52,6 +52,6 @@ MonoBehaviour:
   ShopKeepers:
   - {fileID: 2953539080156604483, guid: e8f96770e95816e49ab55894999b9077, type: 3}
   sellMenu: {fileID: 0}
-  nonAvaiableSellMenu: {x: 400, y: 510, z: 0}
-  avaiableSellMenu: {x: 400, y: 370, z: 0}
-  shownSellMenu: {x: 400, y: 220, z: 0}
+  nonAvaiableSellMenu: {x: 400, y: 560, z: 0}
+  avaiableSellMenu: {x: 400, y: 470, z: 0}
+  shownSellMenu: {x: 400, y: 310, z: 0}

@@ -76,6 +76,7 @@ public class ShopManager : MonoBehaviour
         switch (saveManager.saveData.level)
         {
             case 0:
+                saveManager.ResetSaveData();
                 bChooseOne = true;
                 GiveSelection(true, commonItems);
                 AllowSelling(false);
